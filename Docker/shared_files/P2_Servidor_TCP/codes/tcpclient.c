@@ -89,7 +89,7 @@ int main(argc, argv)
 	}
 
 /* imprimimos el resultado y cerramos la conexion del socket */
-	printf("El resultado de la operacion mandada es: %c \n", dir[0]);
+	printf("El resultado de la operacion mandada es: %s \n", dir);
 	close(sd);
 	return 0;
 }

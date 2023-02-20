@@ -1,6 +1,6 @@
 docker start ubnt-cont-1 
 docker exec -it ubnt-cont-1 bash
-cd /distributed_computing/P2_Servidor_TCP/codes
+cd ./distributed_computing/P2_Servidor_TCP/codes
 
 ****** SERVER ******
 cc tcpserver.c -lnsl -o tcpserver
