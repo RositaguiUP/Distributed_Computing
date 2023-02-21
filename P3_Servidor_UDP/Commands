@@ -15,7 +15,7 @@ kill <pid>
 
 ****** CLIENT ******
 cc udpcliente.c -lnsl -o udpcliente
-./udpclient 0 ./operations.txt
+./udpcliente ./operations.txt
 
 Escribe la ip del server: 172.18.2.2
 Escribe el puerto del server: 15000

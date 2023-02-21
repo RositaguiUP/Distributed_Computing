@@ -89,7 +89,7 @@ int main(argc, argv)
         perror("recvfrom failed");
         exit(EXIT_FAILURE);
     }else{
-        printf("El resultado de la operacion mandada es: %c \n", buffer[0]);
+        printf("El resultado de la operacion mandada es: %s \n", buffer);
     }
 
     // close the descriptor 
