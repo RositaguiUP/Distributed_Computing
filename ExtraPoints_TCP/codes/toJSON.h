@@ -46,45 +46,15 @@ void stringToJson(char* word, struct json* prueba){
 }
 
 //Esta funcion recibe como parametros una palabra y devuelve cuantas vocales contiene.
-void toJSON(dir)
+void toJSON(dir, palabras)
   char *dir; //palabra nueva
 {
-  char line[MAX_LIMIT];
-  char final[1024 * 10];
-  int value = 0;
-  int numPalabras = 0;
   struct json prueba;
-
+  strcpy(prueba -> text, palabras);
+  stringToJson(dir, &prueba);
   //Prueba gora
-  char palabras[1024][MAX_LIMIT];
-    for(int x = 0; x < numPalabras; x++){
-        printf("En %d el arreglo tiene el valor %s\n", x, palabras[x]);
-    }
-  //EndPruebaGora
 
-  while(value != 10){
-    fgets(line, MAX_LIMIT, stdin);
-    //scanf("%s", line);
-    value = strcmp(line,"exit"); 
-    
-    if(value != 0){
-      //Agrega valor
-      strcpy(palabras[numPalabras], line);
-      numPalabras++;
-      
-      //
-      for(int i = 0; i < numPalabras; i++){
-        stringToJson(palabras[i], &prueba);
-        puts(prueba.text);
-        if(numPalabras != 1){
-          printf("%s", ", \0");
-        }
-      }
-      
-    }
-  }
-  printf(json);
-  strcpy(dir,json);
-  return 0;
+  printf(prueba.text);
+  strcpy(dir,prueba.text);
 }
 

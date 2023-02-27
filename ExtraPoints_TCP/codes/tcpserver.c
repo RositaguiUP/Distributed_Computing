@@ -94,7 +94,7 @@ int main() {
 
     /* leyendo el directorio */
     // calculate(dir);
-    toJSON(dir);
+    toJSON(dir, palabras);
 
     /* enviando la respuesta del servicio */
     if (send(sd_actual, dir, strlen(dir), 0) == -1) {
