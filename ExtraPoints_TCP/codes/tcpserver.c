@@ -22,6 +22,7 @@ int sd, sd_actual;            /* descriptores de sockets */
 int addrlen;                  /* longitud direcciones */
 struct sockaddr_in sind, pin; /* direcciones sockets cliente u servidor */
 int t = 1;
+char palabras[1024][MAX_LIMIT];
 
 /*  procedimiento de aborte del servidor, si llega una senal SIGINT */
 /* ( <ctrl> <c> ) se cierra el socket y se aborta el programa       */
