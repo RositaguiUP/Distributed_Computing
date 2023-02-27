@@ -23,6 +23,10 @@ int addrlen;                  /* longitud direcciones */
 struct sockaddr_in sind, pin; /* direcciones sockets cliente u servidor */
 int t = 1;
 
+char palabras[1024][MAX_LIMIT]; /* arreglo de palabras dentro del servidor*/
+int numPalabra = 0;
+
+
 /*  procedimiento de aborte del servidor, si llega una senal SIGINT */
 /* ( <ctrl> <c> ) se cierra el socket y se aborta el programa       */
 void aborta_handler(int sig) {
@@ -90,6 +94,9 @@ int main() {
     if (dir == 'exit') {
       t = 0;
       break;
+    }else{
+      strcpy(palabras[numPalabras], dir);
+      numPalabras++;
     }
 
     /* leyendo el directorio */
