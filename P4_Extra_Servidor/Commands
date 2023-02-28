@@ -1,0 +1,17 @@
+docker start ubnt-cont-1 
+docker exec -it ubnt-cont-1 bash
+cd ./distributed_computing/P4_Extra_Servidor/codes
+
+****** SERVER ******
+cc tcpserver.c -lnsl -o tcpserver
+./tcpserver
+
+
+** if error -> bind: Address already in use
+netstat -tulpn
+kill <pid>
+
+
+****** CLIENT ******
+cc tcpclient.c -lnsl -o tcpclient
+./tcpclient
