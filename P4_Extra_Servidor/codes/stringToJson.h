@@ -12,16 +12,16 @@
 #define MAX_LIMIT 2048
 
 void stringToJson(char* word, char* fullAns){
-  char json[MAX_LIMIT*2 + 5];
+  char json[MAX_LIMIT*2 + 6];
   char add = ':';
-  int size = strlen (word);
+  int size = strlen(word);
 
   //Concatenates opening key
   json[0] = '{';
   json[1] = '\0';
 
   //Concatenates word
-  strncat(json, word, size - 1);
+  strncat(json, word, size);
 
   //Concatenates two points
   strncat(json, &add, 1);
@@ -31,11 +31,14 @@ void stringToJson(char* word, char* fullAns){
   strncat(json, &add, 1);
 
   //concatenates value
-  strncat(json, word, size);
+  strncat(json, word, size + 1);
 
   //Concatenates closing key
-  size = strlen (json);
-  json[size - 1] = '}';
+  //json[size + 1] = '}';
+  add = '}';
+  strncat(json, &add, 1);
+
+  size = strlen(json);
 
   //Sets json value
   strncat(fullAns, json, size);
