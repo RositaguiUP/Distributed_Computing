@@ -59,39 +59,49 @@ char *argv[];
         exit(EXIT_FAILURE);
     }
 
-    // it is not required to establish a connection
-    // directly sending a message
-    int r = sendto(sockfd, mac, strlen(mac), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
-    if (r == -1)
+    char sigue = 'S';
+    while (sigue == 'S')
     {
-        perror("sendto failed");
-        exit(EXIT_FAILURE);
-    }
 
-    // waiting for response
-    int len = sizeof(servaddr);
-    int n = recvfrom(sockfd, buffer, MAXLINE, 0, (struct sockaddr *)&servaddr, &len);
-    if (n < 0)
-    {
-        perror("recvfrom failed");
-        exit(EXIT_FAILURE);
-    }
-    else
-    {
-        buffer[n] = '\0';
-        printf("Tu nueva IP: %s \n", buffer);
-        while (1)
+        // it is not required to establish a connection
+        // directly sending a message
+        int r = sendto(sockfd, mac, strlen(mac), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
+        if (r == -1)
         {
-            scanf("%s", endLease);
-            if (strcmp(endLease, "endLease") == 0)
+            perror("sendto failed");
+            exit(EXIT_FAILURE);
+        }
+
+        // waiting for response
+        int len = sizeof(servaddr);
+        int n = recvfrom(sockfd, buffer, MAXLINE, 0, (struct sockaddr *)&servaddr, &len);
+        if (n < 0)
+        {
+            perror("recvfrom failed");
+            exit(EXIT_FAILURE);
+        }
+        else
+        {
+            buffer[n] = '\0';
+            printf("Tu nueva IP: %s \n", buffer);
+            while (1)
             {
-                r = sendto(sockfd, mac, strlen(mac), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
-                if (r == -1)
+                scanf("%s", endLease);
+                if (strcmp(endLease, "tryAgain") == 0)
                 {
-                    perror("sendto failed");
-                    exit(EXIT_FAILURE);
+                    break;
                 }
-                break;
+                else if (strcmp(endLease, "endLease") == 0)
+                {
+                    r = sendto(sockfd, mac, strlen(mac), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
+                    if (r == -1)
+                    {
+                        perror("sendto failed");
+                        exit(EXIT_FAILURE);
+                    }
+                    sigue = 'N';
+                    break;
+                }
             }
         }
     }

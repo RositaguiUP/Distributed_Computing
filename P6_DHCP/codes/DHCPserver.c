@@ -65,48 +65,45 @@ int main()
     // bind server address to socket descriptor
     bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
 
-	char sigue='S';
-    while (sigue=='S') {
+    char sigue = 'S';
+    while (sigue == 'S')
+    {
         //  receive the datagram
         len = sizeof(cliaddr);
         int n = recvfrom(listenfd, buffer, sizeof(buffer),
-                        0, (struct sockaddr *)&cliaddr, &len); // receive message from server
+                         0, (struct sockaddr *)&cliaddr, &len); // receive message from server
         if (n < 0)
         {
             perror("recvfrom failed");
             exit(EXIT_FAILURE);
         }
 
-        if((strcmp(buffer,"close")==0)){ //it means that the conversation must be closed
-			sigue='N';
-			strcpy(message,"close");
-		}else{
+        if ((strcmp(buffer, "close") == 0))
+        { // it means that the conversation must be closed
+            sigue = 'N';
+            strcpy(message, "close");
+        }
+        else
+        {
             buffer[n] = '\0';
-            printf("\nHe recibido del cliente: ");
+            printf("\nEl siguiente cliente (MAC) hizo una petición: ");
             printf("%s\n", buffer);
 
-            printf("Holaa\n");
             // GIVE VALID IP ADDRESS
             for (int i = 0; i < RANGE; i++)
             {
                 char *tmp = malloc(strlen(macs[i]) + 1);
                 strcpy(tmp, macs[i]);
-                printf("%s\n", tmp);
-                printf("%s\n", buffer);
                 if (!strcmp(tmp, buffer))
                 {
                     free = i + 1;
-                    printf("free: %d\n", free);
                     break;
                 }
-                printf("DONE\n");
             }
             strcpy(message, "AIUDA");
-            printf("Hi %s\n", message);
-
             if (free != 0)
             {
-                strcpy(macs[free - 1],"00-00-00-00-00-00");
+                strcpy(macs[free - 1], "00-00-00-00-00-00");
                 ipsLeased[free - 1] = 0;
                 // MAC's IP removed and free
                 strcpy(message, "IP Libre");
@@ -114,7 +111,6 @@ int main()
             else
             {
                 strcpy(message, "No se obtuvo");
-                printf("Message: %s", message);
                 for (int i = 0; i < RANGE; i++)
                 {
                     if (ipsLeased[i] == 0)
@@ -123,21 +119,18 @@ int main()
                         ipsLeased[i] = 1;
                         strcpy(macs[i], buffer);
                         sprintf(current, "%d", LASTNUM + i);
-                        printf("CU %s", current);
                         strcpy(message, IP);
                         strcat(message, current);
                         break;
                     }
                 }
             }
-
-            printf("Message: %s", message);
             free = 0;
         }
 
         // send the response
         sendto(listenfd, message, MAXLINE, 0,
-            (struct sockaddr *)&cliaddr, sizeof(cliaddr));
+               (struct sockaddr *)&cliaddr, sizeof(cliaddr));
     }
 
     close(listenfd);
