@@ -1,0 +1,9 @@
+docker start ubnt-cont-1 
+docker exec -it ubnt-cont-1 bash
+cd /distributed_computing/P8_Fork/codes
+
+cc main.c -o main
+./main
+
+Get PIDs running
+ps -ef

@@ -25,7 +25,7 @@
 #pragma comment(lib,"-lws2_32")
 
 #define  DIRSIZE    2048   /* longitud maxima parametro entrada/salida */
-#define  PUERTO    15000   /* numero puerto arbitrario */
+#define  PUERTO     5000   /* numero puerto arbitrario */
 #define  MSGSIZE    2048   /* longitud de los mensajes */
 
 int main(argc, argv)
@@ -48,7 +48,7 @@ int main(argc, argv)
            fprintf(stderr,"Error uso: %s <host> <archivo> \n",argv[0]);
            exit(1);
         }*/
-        host = "15000"; //argv[1];
+        host = "5000"; //argv[1];
 
 /*  iniciando windosrck library */
 	printf("\nInitialising Winsock...");
@@ -84,8 +84,8 @@ int main(argc, argv)
 		
 /* llenar la estructura de direcciones con la informacion del host */
 	pin.sin_family = AF_INET;
-	pin.sin_addr.s_addr = inet_addr("172.25.0.1");//((struct in_addr *) (hp->h_addr))->s_addr;
-	pin.sin_port = htons( 5000 );                    
+	pin.sin_addr.s_addr = inet_addr("192.168.0.100"); //192.168.0.100");//((struct in_addr *) (hp->h_addr))->s_addr; 172.25.0.1
+	pin.sin_port = htons( 5000 );        //  172.18.2.255          
 
 /* conectandose al PUERTO en el HOST  */
 	if ( connect(sd, (struct sockaddr *)&pin, sizeof(pin)) < 0) {
