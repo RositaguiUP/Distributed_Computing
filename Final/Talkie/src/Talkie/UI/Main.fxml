@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<HBox alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1200.0" styleClass="orange-bckgrnd" stylesheets="@Components.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Talkie.Controllers.MainController">
+   <children>
+      <VBox prefHeight="800.0" prefWidth="600.0">
+         <HBox.margin>
+            <Insets />
+         </HBox.margin>
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="90.0" prefWidth="200.0" styleClass="blue-bckgrnd">
+               <children>
+                  <Label prefHeight="58.0" prefWidth="255.0" text="Talkie" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe UI Black" size="35.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+               </padding></HBox>
+            <HBox alignment="CENTER" prefHeight="60.0" prefWidth="200.0" spacing="120.0" styleClass="pink-bckgrnd">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#viewUsers" styleClass="menu-button" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe UI Black" size="22.0" />
+                     </font>
+                      <graphic>
+                        <ImageView fitHeight="40.0" fitWidth="40.0">
+                           <image>
+                              <Image url="@./../../../img/users2.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#viewChats" styleClass="menu-button" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe UI Black" size="22.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="35.0" fitWidth="35.0">
+                           <image>
+                              <Image url="@./../../../img/chats.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#viewRooms" styleClass="menu-button" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe UI Black" size="22.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="45.0" fitWidth="45.0">
+                           <image>
+                              <Image url="@./../../../img/rooms.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#createGroup" styleClass="menu-button" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe UI Black" size="22.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="35.0" fitWidth="35.0">
+                           <image>
+                              <Image url="@./../../../img/addGroup.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children></HBox>
+            <ListView fx:id="lstView" prefHeight="650.0" prefWidth="600.0" />
+         </children>
+      </VBox>
+      <VBox prefHeight="800.0" prefWidth="600.0">
+         <HBox.margin>
+            <Insets />
+         </HBox.margin>
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="90.0" prefWidth="200.0" styleClass="orange-bckgrnd">
+               <children>
+                  <Label fx:id="lblActChat" prefHeight="58.0" prefWidth="255.0" text="NameGroup" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe UI Black" size="30.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+               </padding>
+            </HBox>
+            <ListView fx:id="lstViewMsg" prefHeight="650.0" prefWidth="600.0" />
+            <HBox alignment="CENTER" prefHeight="60.0" prefWidth="200.0" spacing="20.0" styleClass="orange-bckgrnd">
+               <children>
+                  <TextField fx:id="txtMessage" prefHeight="31.0" prefWidth="500.0" promptText="Write your message...">
+                     <font>
+                        <Font name="Segoe UI" size="20.0"/>
+                     </font></TextField>
+                  <Button mnemonicParsing="false" onAction="#sendMessage" styleClass="menu-button" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe UI Black" size="22.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="35.0" fitWidth="35.0">
+                           <image>
+                              <Image url="@./../../../img/send.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</HBox>

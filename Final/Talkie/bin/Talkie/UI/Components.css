@@ -1,0 +1,60 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+
+#txtMessage {
+    -fx-text-fill: #73797d; /* Set the text color */
+}
+
+.btnContinue {
+    -fx-background-color: #EC82B3;
+    -fx-background-radius: 5px;
+}
+
+.menu-button {
+    -fx-background-color: transparent;
+}
+
+.dark-blue-bckgrnd {
+    -fx-background-color: #929aa0;
+}
+
+.soft-gray-bckgrnd {
+    -fx-background-color: #cacccd7e;
+    -fx-background-radius: 25px;
+}
+
+.dark-gray-bckgrnd {
+    -fx-background-color: #3f4143;
+}
+
+
+.blue-bckgrnd {
+    -fx-background-color: #40ACFF;
+}
+
+.pink-bckgrnd {
+    -fx-background-color: #EC82B3;
+}
+
+.orange-bckgrnd {
+    -fx-background-color: #ff8200;
+}
+
+/* dialog-buttons.css */
+.ok-button {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+    -fx-font-family: 'Segoe UI Black';
+    -fx-font-size: 22;
+}
+
+.cancel-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-family: 'Segoe UI Black';
+    -fx-font-size: 22;
+}
+
