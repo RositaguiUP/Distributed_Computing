@@ -20,59 +20,59 @@
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="90.0" prefWidth="200.0" styleClass="blue-bckgrnd">
                <children>
-                  <Label prefHeight="58.0" prefWidth="255.0" text="Talkie" textFill="WHITE">
+                  <Label prefHeight="58.0" prefWidth="510.0" text="Talkie" textFill="WHITE">
                      <font>
                         <Font name="Segoe UI Black" size="35.0" />
                      </font>
                   </Label>
+                  <Button mnemonicParsing="false" onAction="#refresh" prefHeight="45.0" prefWidth="45.0" styleClass="menu-button" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                           <image>
+                              <Image url="@./../../../img/refresh.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                </children>
                <padding>
                   <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
                </padding></HBox>
             <HBox alignment="CENTER" prefHeight="60.0" prefWidth="200.0" spacing="120.0" styleClass="pink-bckgrnd">
                <children>
-                  <Button mnemonicParsing="false" onAction="#viewUsers" styleClass="menu-button" textFill="WHITE">
-                     <font>
-                        <Font name="Segoe UI Black" size="22.0" />
-                     </font>
-                      <graphic>
-                        <ImageView fitHeight="40.0" fitWidth="40.0">
-                           <image>
-                              <Image url="@./../../../img/users2.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#viewChats" styleClass="menu-button" textFill="WHITE">
+                  <Button mnemonicParsing="false" onAction="#viewChats" prefHeight="45.0" prefWidth="45.0" styleClass="menu-button" textFill="WHITE">
                      <font>
                         <Font name="Segoe UI Black" size="22.0" />
                      </font>
                      <graphic>
-                        <ImageView fitHeight="35.0" fitWidth="35.0">
+                        <ImageView fitHeight="20.0" fitWidth="20.0">
                            <image>
                               <Image url="@./../../../img/chats.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#viewRooms" styleClass="menu-button" textFill="WHITE">
-                     <font>
-                        <Font name="Segoe UI Black" size="22.0" />
-                     </font>
+                  <Button mnemonicParsing="false" onAction="#viewRooms" prefHeight="45.0" prefWidth="45.0" styleClass="menu-button" textFill="WHITE">
                      <graphic>
-                        <ImageView fitHeight="45.0" fitWidth="45.0">
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
                            <image>
                               <Image url="@./../../../img/rooms.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#createGroup" styleClass="menu-button" textFill="WHITE">
-                     <font>
-                        <Font name="Segoe UI Black" size="22.0" />
-                     </font>
+                  <Button mnemonicParsing="false" onAction="#viewUsers" prefHeight="45.0" prefWidth="45.0" styleClass="menu-button" textFill="WHITE">
+                      <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                           <image>
+                              <Image url="@./../../../img/users2.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#createGroup" prefHeight="45.0" prefWidth="45.0" styleClass="menu-button" textFill="WHITE">
                      <graphic>
-                        <ImageView fitHeight="35.0" fitWidth="35.0">
+                        <ImageView fitHeight="25.0" fitWidth="25.0">
                            <image>
                               <Image url="@./../../../img/addGroup.png" />
                            </image>
@@ -90,11 +90,20 @@
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="90.0" prefWidth="200.0" styleClass="orange-bckgrnd">
                <children>
-                  <Label fx:id="lblActChat" prefHeight="58.0" prefWidth="255.0" text="NameGroup" textFill="WHITE">
+                  <Label fx:id="lblActChat" prefHeight="58.0" prefWidth="527.0" text="NameGroup" textFill="WHITE">
                      <font>
                         <Font name="Segoe UI Black" size="30.0" />
                      </font>
                   </Label>
+                  <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#deleteGroup" prefHeight="45.0" prefWidth="45.0" styleClass="menu-button" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                           <image>
+                              <Image url="@./../../../img/delete.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                </children>
                <padding>
                   <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
@@ -105,14 +114,11 @@
                <children>
                   <TextField fx:id="txtMessage" prefHeight="31.0" prefWidth="500.0" promptText="Write your message...">
                      <font>
-                        <Font name="Segoe UI" size="20.0"/>
+                        <Font name="Segoe UI" size="20.0" />
                      </font></TextField>
-                  <Button mnemonicParsing="false" onAction="#sendMessage" styleClass="menu-button" textFill="WHITE">
-                     <font>
-                        <Font name="Segoe UI Black" size="22.0" />
-                     </font>
+                  <Button mnemonicParsing="false" onAction="#sendMessage" prefHeight="40.0" prefWidth="40.0" styleClass="menu-button" textFill="WHITE">
                      <graphic>
-                        <ImageView fitHeight="35.0" fitWidth="35.0">
+                        <ImageView fitHeight="25.0" fitWidth="25.0">
                            <image>
                               <Image url="@./../../../img/send.png" />
                            </image>

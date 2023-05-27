@@ -32,9 +32,11 @@ import Talkie.Elements.Group;
 import Talkie.Elements.Message;
 import Talkie.Elements.User;
 import Talkie.Functions.Client;
+import Talkie.Functions.ListViewSetting.ListOptions;
 import Talkie.UIElements.Msg.MsgCell;
-import Talkie.UIElements.Person.PersonListCell;
 import Talkie.UIElements.User.UserCell;
+import Talkie.UIElements.Chat.ChatCell;
+import Talkie.UIElements.Room.RoomCell;
 
 /**
  * FXML Controller class
@@ -49,16 +51,28 @@ public class MainController implements Initializable {
     @FXML
     private Label lblActChat;
     @FXML
+    private Button btnDelete;
+    @FXML
     private TextField txtMessage;
     @FXML
     private ListView<Message> lstViewMsg;
-
     @FXML
-    private ListView<User> lstView;
+    private ListView<Object> lstView;
 
-
+    // Active items
     private User activeUser;
     private Group activeGroup;
+    private ListOptions activeList;
+
+    // Lists
+    private ArrayList<User> users;
+    private ArrayList<Group> chats;
+    private ArrayList<Group> rooms;
+    private ArrayList<Message> messages;
+    private ObservableList<User> usersItems;
+    private ObservableList<Group> chatsItems;
+    private ObservableList<Group> roomsItems;
+    private ObservableList<Message> messagesItems;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -67,40 +81,95 @@ public class MainController implements Initializable {
 
     public void initData(User user) throws IOException{
         activeUser = user;
-        updateChat();
+        activeList = ListOptions.ROOMS;
+
+        updateLists();
     }
 
-    public void updateChat() {
+    public void updateLists() {
+        getData();
 
-        ArrayList<User> users = new ArrayList<>();
-        users.add(activeUser);
-
-        ArrayList<Message> chat = new ArrayList<>();
-        chat.add(new Message(activeUser, "Hola"));
-        chat.add(new Message(new User("User2"), "Holi"));
-
-        activeGroup = new Group("Group", users, chat);
+        activeGroup = chats.get(0);
         lblActChat.setText(activeGroup.getGroupname());
 
-        // Chat
-        ObservableList<Message> messagesItems = FXCollections.observableArrayList();
-        messagesItems.add(new Message(activeUser, "Hola")); //chat.get(0));
-        messagesItems.add(new Message(new User("User2"), "Holi"));
-        
+        // Enable option to delete group
+        if (activeGroup.getUsers().size() == 1) {
+            btnDelete.setVisible(true);
+        } else {
+            btnDelete.setVisible(false);
+        }
+
+        // Messages list View
         lstViewMsg.setCellFactory((lv) -> {
-            return MsgCell.newInstance();
+            return MsgCell.newInstance(activeUser);
         });
         lstViewMsg.setItems(messagesItems);
 
+        // Main list view
+        // lstView.setCellFactory((lv) -> {
+        //     return UserCell.newInstance();
+        // });
+        //lstView.setItems((ObservableList<Object>) usersItems);
+
+        switch (activeList) {
+            case CHATS:
+                // lstView.setCellFactory((lv) -> {
+                //     return ChatCell.newInstance();
+                // });
+                //  // Create a new ObservableList<Object>
+                // ObservableList<Object> objectItems = FXCollections.observableArrayList();
+                // objectItems.addAll(usersItems);
+
+                // // Set the items for lstView
+                // lstView.setItems(objectItems);
+                // lstView.setItems(chatItems);
+                break;
+            case USERS:
+                // lstView.setCellFactory((lv) -> {
+                //     return UserCell.newInstance();
+                // });
+                // lstView.setItems(usersItems);
+                break;
+            case ROOMS:
+                // lstView.setCellFactory((lv) -> {
+                //     return RoomCell.newInstance();
+                // });
+                // lstView.setItems(roomsItems);
+                break;
+        }
+    }
+
+    private void getData() {
+        users = new ArrayList<>();
+        chats = new ArrayList<>();
+        rooms = new ArrayList<>();
+        messages = new ArrayList<>();
+        usersItems = FXCollections.observableArrayList();
+        chatsItems = FXCollections.observableArrayList();
+        roomsItems = FXCollections.observableArrayList();
+        messagesItems = FXCollections.observableArrayList();
+
         // Users
-        ObservableList<User> usersItems = FXCollections.observableArrayList();
+        users.add(activeUser);
+        users.add(new User("User2", false));
+        users.add(new User("User3", false, true));
         usersItems.addAll(users);
 
-        lstView.setCellFactory((lv) -> {
-            return UserCell.newInstance();
-        });
-        lstView.setItems(usersItems);
+        // Groups / Chats
+        chats.add(new Group("Group", users, messages, false));
+        chats.add(new Group("Group2", users, messages, true));
+        chatsItems.addAll(chats);
+
+        // Groups / Rooms
+        rooms.add(new Group("Group3", users, true));
+        rooms.add(new Group("Group4", users, true));
+        roomsItems.addAll(rooms);
         
+        // Messages
+        messages.add(new Message(activeUser, "Hola"));
+        messages.add(new Message(users.get(1), "Holi"));
+        messagesItems.addAll(messages);
+
 
         // try {
         //     Client client = new Client();
@@ -116,6 +185,12 @@ public class MainController implements Initializable {
         // } catch (Exception e) {
         //     System.out.println("Server not available");
         // }
+    }
+
+    @FXML
+    private void refresh(ActionEvent event) {
+        System.out.println("Updating...");
+        updateLists();
     }
     
     @FXML
@@ -187,6 +262,14 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void deleteGroup(ActionEvent event) {
+        System.out.println("Deleting group...");
+        updateLists();
+        // Here I need to change the active group to the next one
+    }
+    
 
     @FXML
     private void sendMessage(ActionEvent event) throws IOException, ParseException {

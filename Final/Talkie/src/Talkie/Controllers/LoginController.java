@@ -66,7 +66,7 @@ public class LoginController implements Initializable {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("./../UI/Main.fxml"));
                 Parent root = null;
 
-                User user = new User(username);
+                User user = new User(username, true);
                 
                 try {
                     root = loader.load();

@@ -4,6 +4,10 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
 
+.list-cell {
+    -fx-background-color: transparent;
+}
+
 #txtMessage {
     -fx-text-fill: #73797d; /* Set the text color */
 }
@@ -15,6 +19,11 @@ and open the template in the editor.
 
 .menu-button {
     -fx-background-color: transparent;
+    -fx-background-radius: 25px;
+}
+
+.menu-button:hover {
+    -fx-background-color: #cacccd7e;
 }
 
 .dark-blue-bckgrnd {
@@ -39,8 +48,17 @@ and open the template in the editor.
     -fx-background-color: #EC82B3;
 }
 
+.round-pink-bckgrnd {
+    -fx-background-color: #EC82B3;
+    -fx-background-radius: 25px;
+}
+
 .orange-bckgrnd {
     -fx-background-color: #ff8200;
+}
+
+.soft-orange-bckgrnd {
+    -fx-background-color: #ff84006e;
 }
 
 /* dialog-buttons.css */
