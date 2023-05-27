@@ -15,7 +15,7 @@ import org.json.simple.parser.ParseException;
 public class Client {
     private final static int KEY = 8;
 
-    private final static int AUTHPORT = 5001;
+    private final static int AUTHPORT = 5000;
     private Socket socket;
     private OutputStream outputStream;
     private InputStream inputStream;
