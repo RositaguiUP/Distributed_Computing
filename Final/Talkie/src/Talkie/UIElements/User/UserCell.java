@@ -123,9 +123,22 @@ public class UserCell extends ListCell<Object> implements Initializable {
                 if (response == '1') {
                     mainController.getUsers();
                     mainController.updateLists();
-                    System.out.println("Request denied");
+                    
+                    // Notify on the group
+                    String message = "User added to the group";
+                    response = client.sendMessage(lblUser.getText(),
+                    mainController.getActiveChat().getGroupname(), message);
+                    
+                    if (response == '1') {
+                        mainController.updateMessages();
+                        System.out.println("User added message send");
+                    } else {
+                        System.out.println("Error sending message");
+                    }
+
+                    System.out.println("Request removed");
                 } else {
-                    System.out.println("Error denied user");
+                    System.out.println("Error removing request");
                 }
             } else {
                 System.out.println("Error accepting user");
@@ -144,6 +157,7 @@ public class UserCell extends ListCell<Object> implements Initializable {
             if (response == '1') {
                 mainController.getUsers();
                 mainController.updateLists();
+                
                 System.out.println("Request denied");
             } else {
                 System.out.println("Error denied user");
@@ -157,14 +171,27 @@ public class UserCell extends ListCell<Object> implements Initializable {
     @FXML
     private void addUser(ActionEvent event) {
         try {
+
             Client client = new Client();
+
             char response = client.addUser(mainController.getActiveUser().getUsername(),
-            mainController.getActiveChat().getGroupname(), lblUser.getText());
+                    mainController.getActiveChat().getGroupname(), lblUser.getText());
             
             if (response == '1') {
                 mainController.getUsers();
                 mainController.updateLists();
-                System.out.println("User added");
+                
+                // Notify on the group
+                String message = "User added to the group";
+                response = client.sendMessage(lblUser.getText(),
+                mainController.getActiveChat().getGroupname(), message);
+                
+                if (response == '1') {
+                    mainController.updateMessages();
+                    System.out.println("User added");
+                } else {
+                    System.out.println("Error sending message");
+                }
             } else {
                 System.out.println("Error adding user");
             }
@@ -177,14 +204,25 @@ public class UserCell extends ListCell<Object> implements Initializable {
     private void removeUser(ActionEvent event) {
         try {
             Client client = new Client();
-            char response = client.deleteUser(mainController.getActiveChat().getGroupname(), lblUser.getText());
-            
+
+            // Notify on the group
+            String message = "User removed from the group";
+            char response = client.sendMessage(lblUser.getText(),
+                       mainController.getActiveChat().getGroupname(), message);
+                       
             if (response == '1') {
-                mainController.getUsers();
-                mainController.updateLists();
                 System.out.println("User removed");
+                mainController.updateMessages();
+
+                response = client.deleteUser(mainController.getActiveChat().getGroupname(), lblUser.getText());
+                if (response == '1') {
+                    mainController.getUsers();
+                    mainController.updateLists();
+                } else {
+                    System.out.println("Error deleting user");
+                }
             } else {
-                System.out.println("Error deleting user");
+                System.out.println("Error sending message");
             }
         } catch (Exception e) {
             System.out.println("Server not available");

@@ -230,7 +230,7 @@ public class MainController implements Initializable {
         }
     }
 
-    private void getChats() {
+    public void getChats() {
         chats = new ArrayList<>();
         chatsItems.clear();
 
@@ -259,7 +259,7 @@ public class MainController implements Initializable {
         }
     }
 
-    private void getRooms() {
+    public void getRooms() {
         ArrayList<Room> rooms = new ArrayList<>();
         roomsItems.clear();
 
@@ -288,37 +288,38 @@ public class MainController implements Initializable {
     }
 
     private void getMessages() {
-        ArrayList<Message> messages = new ArrayList<>();
-        messagesItems.clear();
+        if (activeChat != null) {
+            ArrayList<Message> messages = new ArrayList<>();
+            messagesItems.clear();
 
-        try {
-            Client client = new Client();
-            JSONObject responseJson = client.getChat(activeUser.getUsername(), activeChat.getGroupname());
+            try {
+                Client client = new Client();
+                JSONObject responseJson = client.getChat(activeUser.getUsername(), activeChat.getGroupname());
+                
+                char response = ((String) responseJson.get("result")).charAt(0);
             
-            char response = ((String) responseJson.get("result")).charAt(0);
-        
-            if (response == '1') {
-                JSONArray arrayJson = (JSONArray) responseJson.get("chats");
+                if (response == '1') {
+                    JSONArray arrayJson = (JSONArray) responseJson.get("chats");
 
-                for (Object obj : arrayJson) {
-                    JSONObject msgObject = (JSONObject) obj;
-                    String username = (String) msgObject.get("user");
-                    String messageText = (String) msgObject.get("message");
-        
-                    User user = new User(username, true);
-                    Message message = new Message(user, messageText);
-                    messages.add(message);
+                    for (Object obj : arrayJson) {
+                        JSONObject msgObject = (JSONObject) obj;
+                        String username = (String) msgObject.get("user");
+                        String messageText = (String) msgObject.get("message");
+            
+                        User user = new User(username, true);
+                        Message message = new Message(user, messageText);
+                        messages.add(message);
+                    }
+
+                    messagesItems.addAll(messages);
+
+                } else {
+                    System.out.println("Error getting messages");
                 }
-
-                messagesItems.addAll(messages);
-
-            } else {
-                System.out.println("Error getting messages");
+            } catch (Exception e) {
+                System.out.println("Server not available");
             }
-        } catch (Exception e) {
-            System.out.println("Server not available");
         }
-
     }
 
     @FXML
@@ -342,14 +343,18 @@ public class MainController implements Initializable {
     @FXML
     private void viewUsers(ActionEvent event) {
         activeList = ListOptions.USERS;
-        getUsers();
+        if (activeChat != null) {
+            getUsers();
+        } else {
+            usersItems.clear();
+        }
         updateLists();
     }
 
     @FXML
     private void viewChats(ActionEvent event) {
+        activeList = ListOptions.CHATS;
         if (activeChat != null) {
-            activeList = ListOptions.CHATS;
             getChats();
 
             if (chats.isEmpty()) {
@@ -361,12 +366,14 @@ public class MainController implements Initializable {
                         break;
                     }
                 }
-                updateActiveChat(chats.get(0));
             }
-    
             updateActiveChat(activeChat);
-            updateLists();
+
+            
         }
+        
+        updateLists();
+        updateMessages();
     }
 
     @FXML
@@ -440,6 +447,7 @@ public class MainController implements Initializable {
             char response = client.deleteGroup(activeChat.getGroupname());
         
             if (response == '1') {
+                updateMessages();
                 getChats();
                 if (chats.isEmpty()) {
                     updateActiveChat(null);

@@ -81,9 +81,24 @@ public class RoomCell extends ListCell<Object> implements Initializable {
 
     @FXML
     private void enterGroups(ActionEvent event) {
+        try {
+            Client client = new Client();
+            char response = client.addReq(mainController.getActiveUser().getUsername(),
+                 lblGroup.getText(), mainController.getActiveUser().getUsername());
+            
+            if (response == '1') {
+                mainController.getRooms();
+                mainController.updateLists();
+                System.out.println("Req added");
+            } else {
+                System.out.println("Error adding req");
+            }
+        } catch (Exception e) {
+            System.out.println("Server not available");
+        }
         
-        btnEnter.setDisable(true);
-        lblNotf.setVisible(true);
+        // btnEnter.setDisable(true);
+        // lblNotf.setVisible(true);
         
     }
 

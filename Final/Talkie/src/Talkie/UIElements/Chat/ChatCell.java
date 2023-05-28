@@ -94,19 +94,31 @@ public class ChatCell extends ListCell<Object> implements Initializable {
     private void exitGroup(ActionEvent event) {
         try {
             Client client = new Client();
-            char response = client.deleteUser(lblGroup.getText(), mainController.getActiveUser().getUsername());
+
+            // Notify on the group
+            String message = "This user has left the group";
+            char response = client.sendMessage(mainController.getActiveUser().getUsername(), lblGroup.getText(), message);
             
             if (response == '1') {
-                mainController.getUsers();
-                if (mainController.getArrayChats().isEmpty()) {
-                    mainController.updateActiveChat(null);
+                mainController.updateMessages();
+
+                response = client.deleteUser(lblGroup.getText(), mainController.getActiveUser().getUsername());
+                
+                if (response == '1') {
+                    mainController.getChats();
+                    if (mainController.getArrayChats().isEmpty()) {
+                        mainController.updateActiveChat(null);
+                    } else {
+                        mainController.updateActiveChat(mainController.getArrayChats().get(0));
+                    }
+                    mainController.updateLists();
+                    
                 } else {
-                    mainController.updateActiveChat(mainController.getArrayChats().get(0));
+                    System.out.println("Error deleting user");
                 }
-                mainController.updateLists();
                 System.out.println("Exit group...");
             } else {
-                System.out.println("Error deleting user");
+                System.out.println("Error sending message");
             }
         } catch (Exception e) {
             System.out.println("Server not available");

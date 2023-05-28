@@ -39,13 +39,20 @@ and open the template in the editor.
     -fx-background-color: #3f4143;
 }
 
-
 .blue-bckgrnd {
     -fx-background-color: #40ACFF;
 }
 
+.soft-blue-bckgrnd {
+    -fx-background-color: #40acff9c;
+}
+
 .pink-bckgrnd {
     -fx-background-color: #EC82B3;
+}
+
+.soft-pink-bckgrnd {
+    -fx-background-color: #ec82b3c6;
 }
 
 .round-pink-bckgrnd {

@@ -79,6 +79,16 @@ public class MsgCell extends ListCell<Message> implements Initializable {
                 lblMsg.getStyleClass().add("soft-orange-bckgrnd");
                 lblUser.setText("You");
             }
+            
+            if (item.getMessage().equals("This user has left the group") || 
+                item.getMessage().equals("User removed from the group")) {
+                    
+                container.setAlignment(Pos.CENTER);
+                lblMsg.getStyleClass().add("soft-blue-bckgrnd");
+            } else if (item.getMessage().equals("User added to the group")) {
+                container.setAlignment(Pos.CENTER);
+                lblMsg.getStyleClass().add("soft-pink-bckgrnd");
+            }
         }
 
         // keep a reference to the model item in the ListCell

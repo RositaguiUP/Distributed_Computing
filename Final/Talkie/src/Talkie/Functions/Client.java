@@ -203,6 +203,24 @@ public class Client {
         return response;
     }
 
+    public char addReq(String username, String groupName, String userToAdd) throws IOException, ParseException {
+        connectToServer();
+    
+        // Create a JSONObject instance
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("service", "addReq");
+        jsonObject.put("username", username);
+        jsonObject.put("groupname", groupName);
+        jsonObject.put("add", userToAdd);
+    
+        // Send the encrypted request and receive the response
+        JSONObject responseJson = sendEncryptedRequest(jsonObject);
+
+        char response = ((String) responseJson.get("result")).charAt(0);
+    
+        return response;
+    }
+
     public char deleteUser(String groupName, String userToDelete) throws IOException, ParseException {
         connectToServer();
     
