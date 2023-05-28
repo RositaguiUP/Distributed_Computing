@@ -22,37 +22,49 @@ public class Client {
     private PrintWriter out;
 
     public void connectToServer() throws UnknownHostException, IOException {
-        String host = InetAddress.getLocalHost().getHostAddress();
+        try {
+            String host = InetAddress.getLocalHost().getHostAddress();
 
-        // Connect with the server
-        socket = new Socket(host, AUTHPORT);
-        outputStream = socket.getOutputStream();
-        out = new PrintWriter(outputStream, true);
-        inputStream = socket.getInputStream();
+            // Connect with the server
+            socket = new Socket(host, AUTHPORT);
+            outputStream = socket.getOutputStream();
+            out = new PrintWriter(outputStream, true);
+            inputStream = socket.getInputStream();
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.out.println("Error conection");
+        }
     }
 
     public JSONObject sendEncryptedRequest(JSONObject request) throws IOException, ParseException {
-        // Convert the JSONObject to a JSON string
-        String jsonString = request.toJSONString();
-
-        // Encrypt JSON string
-        String encryptedJson = Encrypt.caesarEncrypt(KEY, jsonString);
-
-        // Send JSON string to server
-        out.println(encryptedJson);
-        out.flush();
-
-        // Read the encrypted response from the server
-        byte[] data = new byte[1024];
-        int bytesRead = inputStream.read(data);
-        String encryptedResp = new String(data, 0, bytesRead);
-
-        // Decrypt the JSON string
-        String decryptedJson = Encrypt.caesarDecrypt(KEY, encryptedResp);
-
         // Parse the decrypted JSON string
         JSONParser parser = new JSONParser();
-        return (JSONObject) parser.parse(decryptedJson);
+        
+        try {
+            // Convert the JSONObject to a JSON string
+            String jsonString = request.toJSONString();
+
+            // Encrypt JSON string
+            String encryptedJson = Encrypt.caesarEncrypt(KEY, jsonString);
+
+            // Send JSON string to server
+            out.println(encryptedJson);
+            out.flush();
+
+            // Read the encrypted response from the server
+            byte[] data = new byte[1024];
+            int bytesRead = inputStream.read(data);
+            String encryptedResp = new String(data, 0, bytesRead);
+
+            // Decrypt the JSON string
+            String decryptedJson = Encrypt.caesarDecrypt(KEY, encryptedResp);
+            return (JSONObject) parser.parse(decryptedJson);
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.out.println("Request fails");
+        }
+        
+        return (JSONObject) parser.parse("{}");
     }
 
     public char login(String username, String password) throws IOException, ParseException {

@@ -53,6 +53,8 @@ public class MainController implements Initializable {
      */
     
     @FXML
+    private Label lblWlcm;
+    @FXML
     private Label lblActChat;
     @FXML
     private Button btnDelete;
@@ -69,10 +71,7 @@ public class MainController implements Initializable {
     private ListOptions activeList;
 
     // Lists
-    private ArrayList<User> users;
     private ArrayList<Chat> chats;
-    private ArrayList<Room> rooms;
-    private ArrayList<Message> messages;
     private ObservableList<User> usersItems;
     private ObservableList<Chat> chatsItems;
     private ObservableList<Room> roomsItems;
@@ -84,25 +83,41 @@ public class MainController implements Initializable {
     }    
 
     public void initData(User user) throws IOException{
+        usersItems = FXCollections.observableArrayList();
+        chatsItems = FXCollections.observableArrayList();
+        roomsItems = FXCollections.observableArrayList();
+        messagesItems = FXCollections.observableArrayList();
+
         activeUser = user;
+        lblWlcm.setText("Welcome to Talkie " + activeUser.getUsername() + "!");
+
         activeList = ListOptions.CHATS;
         getChats();
 
-        updateActiveChat(chats.get(0));
+        if (chats.isEmpty()) {
+            updateActiveChat(null);
+        } else {
+            updateActiveChat(chats.get(0));
+        }
         updateLists();
     }
 
     public void updateActiveChat(Chat chat) {
-        activeChat = chat;
-        lblActChat.setText(activeChat.getGroupname());
+        if (chat != null) {
+            activeChat = chat;
+            lblActChat.setText(activeChat.getGroupname());
 
-        // Enable option to delete group
-        if (activeChat.getTotalUsers() == 1 && activeChat.isAdmin()) {
-            btnDelete.setVisible(true);
+            // Enable option to delete group
+            if (activeChat.getTotalUsers() == 1 && activeChat.isAdmin()) {
+                btnDelete.setVisible(true);
+            } else {
+                btnDelete.setVisible(false);
+            }
+            updateMessages();
         } else {
+            lblActChat.setText("No chats yet!");
             btnDelete.setVisible(false);
         }
-        updateMessages();
     }
 
     public void updateMessages() {
@@ -124,8 +139,10 @@ public class MainController implements Initializable {
                 });
                 
                 ObservableList<Object> objectItemsChats = FXCollections.observableArrayList();
+                objectItemsChats.clear();
                 objectItemsChats.addAll(chatsItems);
                 lstView.setItems(objectItemsChats);
+                lstView.refresh();
 
                 // Select the activeChat if it exists in the chats list
                 if (activeChat != null && chats.contains(activeChat)) {
@@ -141,8 +158,10 @@ public class MainController implements Initializable {
                 });
 
                 ObservableList<Object> objectItemsUsers = FXCollections.observableArrayList();
+                objectItemsUsers.clear();
                 objectItemsUsers.addAll(usersItems);
                 lstView.setItems(objectItemsUsers);
+                lstView.refresh();
                 break;
             case ROOMS:
                 lstView.setCellFactory((lv) -> {
@@ -150,47 +169,99 @@ public class MainController implements Initializable {
                 });
 
                 ObservableList<Object> objectItemsRooms = FXCollections.observableArrayList();
+                objectItemsRooms.clear();
                 objectItemsRooms.addAll(roomsItems);
                 lstView.setItems(objectItemsRooms);
+                //lstView.setItems(roomsItems);
+                lstView.refresh();
                 break;
         }
     }
 
     private void getUsers() {
-        users = new ArrayList<>();
-        usersItems = FXCollections.observableArrayList();
-        
-        users.add(activeUser);
-        users.add(new User("User2", false));
-        users.add(new User("User3", false, true));
-        usersItems.addAll(users);
+        ArrayList<User> users = new ArrayList<>();
+
+        try {
+            Client client = new Client();
+            JSONObject responseJson = client.getUsers(activeUser.getUsername(), activeChat.getGroupname());
+            
+            JSONArray arrayJson = (JSONArray) responseJson.get("users");
+
+            for (Object obj : arrayJson) {
+                JSONObject chatObject = (JSONObject) obj;
+                String userName = (String) chatObject.get("username");
+
+                User user = new User(userName, true);
+                users.add(user);
+            }
+
+            usersItems.addAll(users);
+            System.out.println("Got users");
+        } catch (Exception e) {
+            System.out.println("Server not available");
+        }
     }
 
     private void getChats() {
         chats = new ArrayList<>();
-        chatsItems = FXCollections.observableArrayList();
+        chatsItems.clear();
 
-        // Groups / Chats
-        Chat chat1 = new Chat("Group", 1, 2, false);
-        chat1.setNewMessages(true);
-        chats.add(chat1);
-        chats.add(new Chat("Group2", 2, 2, false));
-        chatsItems.addAll(chats);
+        try {
+            Client client = new Client();
+            JSONObject responseJson = client.getChats(activeUser.getUsername());
+            
+            JSONArray arrayJson = (JSONArray) responseJson.get("groups");
+
+            for (Object obj : arrayJson) {
+                JSONObject chatObject = (JSONObject) obj;
+                String groupName = (String) chatObject.get("groupName");
+                long totUsers = (long) chatObject.get("totUsers");
+                long totMsg = (long) chatObject.get("totMsg");
+                long isAdminLong = (long) chatObject.get("isAdmin");
+                boolean isAdmin = isAdminLong == 1L;
+
+                Chat chat = new Chat(groupName, (int) totUsers, (int) totMsg, isAdmin);
+                chats.add(chat);
+            }
+
+            chatsItems.addAll(chats);
+            System.out.println("Got chats");
+        } catch (Exception e) {
+            System.out.println("Server not available");
+        }
     }
 
     private void getRooms() {
-        rooms = new ArrayList<>();
-        roomsItems = FXCollections.observableArrayList();
+        ArrayList<Room> rooms = new ArrayList<>();
+        roomsItems.clear();
 
-        // Groups / Rooms
-        rooms.add(new Room("Group3", false));
-        rooms.add(new Room("Group4", true));
-        roomsItems.addAll(rooms);
+        try {
+            Client client = new Client();
+            JSONObject responseJson = client.getRooms(activeUser.getUsername());
+            
+            JSONArray arrayJson = new JSONArray();
+            arrayJson.clear();
+            arrayJson = (JSONArray) responseJson.get("groups");
+
+            for (Object obj : arrayJson) {
+                JSONObject chatObject = (JSONObject) obj;
+                String groupName = (String) chatObject.get("groupName");
+                long isWaitingLong = (long) chatObject.get("userWaiting");
+                boolean isWaiting = isWaitingLong == 1L;
+                
+                Room room = new Room(groupName, isWaiting);
+                rooms.add(room);
+            }
+            roomsItems.addAll(rooms);
+            System.out.println("Got rooms");
+        } catch (Exception e) {
+            System.out.println("Server not available");
+        }
     }
 
     private void getMessages() {
-        messages = new ArrayList<>();
-        messagesItems = FXCollections.observableArrayList();
+        ArrayList<Message> messages = new ArrayList<>();
+        messagesItems.clear();
 
         try {
             Client client = new Client();
@@ -199,10 +270,9 @@ public class MainController implements Initializable {
             char response = ((String) responseJson.get("result")).charAt(0);
         
             if (response == '1') {
-                System.out.println("Chat is got!");
-                JSONArray msgsJson = (JSONArray) responseJson.get("chats");
+                JSONArray arrayJson = (JSONArray) responseJson.get("chats");
 
-                for (Object obj : msgsJson) {
+                for (Object obj : arrayJson) {
                     JSONObject msgObject = (JSONObject) obj;
                     String username = (String) msgObject.get("user");
                     String messageText = (String) msgObject.get("message");
@@ -215,7 +285,7 @@ public class MainController implements Initializable {
                 messagesItems.addAll(messages);
 
             } else {
-                System.out.println("Error getting chat");
+                System.out.println("Error getting messages");
             }
         } catch (Exception e) {
             System.out.println("Server not available");
@@ -225,11 +295,9 @@ public class MainController implements Initializable {
 
     @FXML
     private void refresh(ActionEvent event) {
-        System.out.println("Updating...");
         getChats();
         getUsers();
         getRooms();
-        getMessages();
         
         for (Chat chat : chats) {
             if (chat.getGroupname().equals(activeChat.getGroupname())) {
@@ -252,18 +320,20 @@ public class MainController implements Initializable {
 
     @FXML
     private void viewChats(ActionEvent event) {
-        activeList = ListOptions.CHATS;
-        getChats();
-
-        for (Chat chat : chats) {
-            if (chat.getGroupname().equals(activeChat.getGroupname())) {
-                activeChat = chat;
-                break;
+        if (activeChat != null) {
+            activeList = ListOptions.CHATS;
+            getChats();
+    
+            for (Chat chat : chats) {
+                if (chat.getGroupname().equals(activeChat.getGroupname())) {
+                    activeChat = chat;
+                    break;
+                }
             }
+    
+            updateActiveChat(activeChat);
+            updateLists();
         }
-
-        updateActiveChat(activeChat);
-        updateLists();
     }
 
     @FXML
@@ -306,7 +376,6 @@ public class MainController implements Initializable {
             okButton.addEventFilter(ActionEvent.ACTION, ev -> {
                 try {
                     int response = createGroupController.createGroup(activeUser.getUsername());
-                    System.out.println("Res = " + response);
                     if (response == 1) {
                         // Allow the dialog to close
                         dialog.close();
@@ -351,7 +420,6 @@ public class MainController implements Initializable {
                 if (response == '1') {
                     txtMessage.setText("");
                     updateMessages();
-                    System.out.println("Message send!");
                 } else {
                     System.out.println("Error sending message");
                 }
