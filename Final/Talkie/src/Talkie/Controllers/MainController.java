@@ -16,6 +16,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
@@ -81,7 +82,7 @@ public class MainController implements Initializable {
 
     public void initData(User user) throws IOException{
         activeUser = user;
-        activeList = ListOptions.ROOMS;
+        activeList = ListOptions.USERS;
 
         updateLists();
     }
@@ -106,35 +107,33 @@ public class MainController implements Initializable {
         lstViewMsg.setItems(messagesItems);
 
         // Main list view
-        // lstView.setCellFactory((lv) -> {
-        //     return UserCell.newInstance();
-        // });
-        //lstView.setItems((ObservableList<Object>) usersItems);
-
         switch (activeList) {
             case CHATS:
-                // lstView.setCellFactory((lv) -> {
-                //     return ChatCell.newInstance();
-                // });
-                //  // Create a new ObservableList<Object>
-                // ObservableList<Object> objectItems = FXCollections.observableArrayList();
-                // objectItems.addAll(usersItems);
-
-                // // Set the items for lstView
-                // lstView.setItems(objectItems);
-                // lstView.setItems(chatItems);
+                lstView.setCellFactory((lv) -> {
+                    return ChatCell.newInstance();
+                });
+                
+                ObservableList<Object> objectItemsChats = FXCollections.observableArrayList();
+                objectItemsChats.addAll(chatsItems);
+                lstView.setItems(objectItemsChats);
                 break;
             case USERS:
-                // lstView.setCellFactory((lv) -> {
-                //     return UserCell.newInstance();
-                // });
-                // lstView.setItems(usersItems);
+                lstView.setCellFactory((lv) -> {
+                    return UserCell.newInstance();
+                });
+
+                ObservableList<Object> objectItemsUsers = FXCollections.observableArrayList();
+                objectItemsUsers.addAll(usersItems);
+                lstView.setItems(objectItemsUsers);
                 break;
             case ROOMS:
-                // lstView.setCellFactory((lv) -> {
-                //     return RoomCell.newInstance();
-                // });
-                // lstView.setItems(roomsItems);
+                lstView.setCellFactory((lv) -> {
+                    return RoomCell.newInstance();
+                });
+
+                ObservableList<Object> objectItemsRooms = FXCollections.observableArrayList();
+                objectItemsRooms.addAll(roomsItems);
+                lstView.setItems(objectItemsRooms);
                 break;
         }
     }
@@ -195,17 +194,20 @@ public class MainController implements Initializable {
     
     @FXML
     private void viewUsers(ActionEvent event) {
-        //contextMenu.show(btnShowMenu, Side.BOTTOM, 0, 0);
+        activeList = ListOptions.USERS;
+        updateLists();
     }
 
     @FXML
     private void viewChats(ActionEvent event) {
-        //updateChat();
+        activeList = ListOptions.CHATS;
+        updateLists();
     }
 
     @FXML
     private void viewRooms(ActionEvent event) {
-        //contextMenu.show(btnShowMenu, Side.BOTTOM, 0, 0);
+        activeList = ListOptions.ROOMS;
+        updateLists();
     }
      
     @FXML
@@ -220,7 +222,6 @@ public class MainController implements Initializable {
             Dialog<Void> dialog = new Dialog<>();
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.setResizable(false);
-            // dialog.getIcons().add(new Image("file:./img/Icon.png"));
 
             // Set the content of the dialog
             dialog.getDialogPane().setContent(root);
@@ -257,6 +258,8 @@ public class MainController implements Initializable {
             
             // Show the dialog and wait for user input
             Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+            // Set the icon for the dialog's stage
+            stage.getIcons().add(new Image("file:./img/Icon.png"));
             stage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
@@ -274,20 +277,21 @@ public class MainController implements Initializable {
     @FXML
     private void sendMessage(ActionEvent event) throws IOException, ParseException {
         String message = txtMessage.getText();
-        
-        try {
-            Client client = new Client();
-            char response = client.sendMessage(activeUser.getUsername(), activeGroup.getGroupname(), message);
-        
-            if (response == '1') {
-                txtMessage.setText("");
-                System.out.println("Message send!");
-            } else {
-                System.out.println("Error sending message");
+
+        if (message != ""){
+            try {
+                Client client = new Client();
+                char response = client.sendMessage(activeUser.getUsername(), activeGroup.getGroupname(), message);
+            
+                if (response == '1') {
+                    txtMessage.setText("");
+                    System.out.println("Message send!");
+                } else {
+                    System.out.println("Error sending message");
+                }
+            } catch (Exception e) {
+                System.out.println("Server not available");
             }
-        } catch (Exception e) {
-            System.out.println("Server not available");
-            //lblError.setText("Server not available");
         }
     }
 }

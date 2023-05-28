@@ -15,14 +15,15 @@
 
 <GridPane fx:id="root" alignment="CENTER" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="580.0" stylesheets="@./../../UI/Components.css" vgap="5.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Talkie.UIElements.Chat.ChatCell">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="478.0" minWidth="204.0" prefWidth="400.0" />
-      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="371.0" minWidth="10.0" prefWidth="274.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="478.0" minWidth="204.0" prefWidth="291.0" />
+      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="371.0" minWidth="10.0" prefWidth="226.0" />
+      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="371.0" minWidth="10.0" prefWidth="56.0" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints vgrow="NEVER" />
   </rowConstraints>
    <children>
-      <Label fx:id="lblGroup" prefHeight="20.0" prefWidth="500.0" text="User1" textFill="#3f4143" GridPane.columnIndex="0">
+      <Label fx:id="lblGroup" prefHeight="34.0" prefWidth="275.0" text="User1" textFill="#3f4143" GridPane.columnIndex="0">
          <font>
             <Font name="Segoe UI" size="20.0" />
          </font>
@@ -38,8 +39,17 @@
             <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
          </padding>
       </Label>
+      <Button mnemonicParsing="false" onAction="#exitGroup" prefHeight="35.0" prefWidth="35.0" styleClass="menu-button" GridPane.columnIndex="2">
+         <graphic>
+            <ImageView fx:id="imgViewIcon" fitHeight="25.0" fitWidth="25.0">
+               <image>
+                    <Image url="@../../../../img/exit.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <GridPane.margin>
+            <Insets right="20.0" />
+         </GridPane.margin>
+      </Button>
    </children>
-   <padding>
-      <Insets right="15.0" />
-   </padding>
 </GridPane>

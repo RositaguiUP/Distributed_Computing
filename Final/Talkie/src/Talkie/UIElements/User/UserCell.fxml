@@ -15,8 +15,8 @@
 
 <GridPane fx:id="root" alignment="CENTER" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="580.0" stylesheets="@./../../UI/Components.css" vgap="5.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Talkie.UIElements.User.UserCell">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="478.0" minWidth="204.0" prefWidth="259.0" />
-      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="371.0" minWidth="10.0" prefWidth="202.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="478.0" minWidth="204.0" prefWidth="271.0" />
+      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="371.0" minWidth="10.0" prefWidth="190.0" />
       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="371.0" minWidth="10.0" prefWidth="42.0" />
       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="371.0" minWidth="10.0" prefWidth="62.0" />
   </columnConstraints>
@@ -24,7 +24,7 @@
     <RowConstraints vgrow="NEVER" />
   </rowConstraints>
    <children>
-      <Label fx:id="lblUser" prefHeight="20.0" prefWidth="500.0" text="User1" textFill="#3f4143" GridPane.columnIndex="0">
+      <Label fx:id="lblUser" prefHeight="34.0" prefWidth="258.0" text="User1" textFill="#3f4143" GridPane.columnIndex="0">
          <font>
             <Font name="Segoe UI" size="20.0" />
          </font>

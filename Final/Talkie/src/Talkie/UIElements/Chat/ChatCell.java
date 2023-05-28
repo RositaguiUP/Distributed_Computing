@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
 
 import Talkie.Elements.Group;
 
-public class ChatCell extends ListCell<Group> implements Initializable {
+public class ChatCell extends ListCell<Object> implements Initializable {
     @FXML
     private Label lblGroup;
 
@@ -24,7 +24,7 @@ public class ChatCell extends ListCell<Group> implements Initializable {
     @FXML
     private GridPane root;
 
-    private Group model;
+    private Object model;
 
    
     /**
@@ -51,21 +51,28 @@ public class ChatCell extends ListCell<Group> implements Initializable {
     }
 
     @Override
-    protected void updateItem(Group item, boolean empty) {
+    protected void updateItem(Object item, boolean empty) {
         super.updateItem(item, empty); // <-- Important
         // make empty cell items invisible
         getRoot().getChildrenUnmodifiable().forEach(c -> c.setVisible(!empty));
         // update valid cells with model data
-        if (!empty && item != null && !item.equals(this.model)) {
-            lblGroup.setText(item.getGroupname());
+        if (!empty && item != null && item instanceof Group && !item.equals(this.model)) {
+            Group group = (Group) item;
+            lblGroup.setText(group.getGroupname());
             lblNotf.setVisible(false);
 
-            if (item.isNewMessages()) {
+            if (group.isNewMessages()) {
                 lblNotf.setVisible(true);
             }
         }
         // keep a reference to the model item in the ListCell
         this.model = item;
     }
+
+    @FXML
+    private void exitGroup(ActionEvent event) {
+        System.out.println("Exit group...");
+    }
+
 
 }

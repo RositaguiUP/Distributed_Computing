@@ -69,28 +69,26 @@ public class UserCell extends ListCell<Object> implements Initializable {
         // make empty cell items invisible
         getRoot().getChildrenUnmodifiable().forEach(c -> c.setVisible(!empty));
         // update valid cells with model data
-        if (!empty && item != null && item instanceof User) {
-            if (!item.equals(this.model)) {
-                User user = (User) item;
-                lblUser.setText(user.getUsername());
-                lblNotf.setVisible(false);
-                btnAccept.setVisible(false);
+        if (!empty && item != null && item instanceof User && !item.equals(this.model)) {
+            User user = (User) item;
+            lblUser.setText(user.getUsername());
+            lblNotf.setVisible(false);
+            btnAccept.setVisible(false);
 
-                if (user.isBelongGroup()) {
-                    // Create a new Image with the updated URL
-                    Image newImage = new Image("file:./img/add.png");
-                    // Set the new Image to the ImageView
-                    imgViewIcon.setImage(newImage);
-                    btnIcon.setOnAction(this::addUser);
+            if (user.isBelongGroup()) {
+                // Create a new Image with the updated URL
+                Image newImage = new Image("file:./img/add.png");
+                // Set the new Image to the ImageView
+                imgViewIcon.setImage(newImage);
+                btnIcon.setOnAction(this::addUser);
 
-                } else if (user.isRequestingEnter()) {
-                    lblNotf.setVisible(true);
-                    btnAccept.setVisible(true);
+            } else if (user.isRequestingEnter()) {
+                lblNotf.setVisible(true);
+                btnAccept.setVisible(true);
 
-                    Image newImage = new Image("file:./img/remove.png");
-                    imgViewIcon.setImage(newImage);
-                    btnIcon.setOnAction(this::denyUser);
-                }
+                Image newImage = new Image("file:./img/remove.png");
+                imgViewIcon.setImage(newImage);
+                btnIcon.setOnAction(this::denyUser);
             }
         }
         // keep a reference to the model item in the ListCell
