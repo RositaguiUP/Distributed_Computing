@@ -27,9 +27,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import Talkie.Elements.Group;
+import Talkie.Elements.Room;
+import Talkie.Elements.Chat;
 import Talkie.Elements.Message;
 import Talkie.Elements.User;
 import Talkie.Functions.Client;
@@ -62,17 +65,17 @@ public class MainController implements Initializable {
 
     // Active items
     private User activeUser;
-    private Group activeGroup;
+    private Chat activeChat;
     private ListOptions activeList;
 
     // Lists
     private ArrayList<User> users;
-    private ArrayList<Group> chats;
-    private ArrayList<Group> rooms;
+    private ArrayList<Chat> chats;
+    private ArrayList<Room> rooms;
     private ArrayList<Message> messages;
     private ObservableList<User> usersItems;
-    private ObservableList<Group> chatsItems;
-    private ObservableList<Group> roomsItems;
+    private ObservableList<Chat> chatsItems;
+    private ObservableList<Room> roomsItems;
     private ObservableList<Message> messagesItems;
 
     @Override
@@ -82,44 +85,59 @@ public class MainController implements Initializable {
 
     public void initData(User user) throws IOException{
         activeUser = user;
-        activeList = ListOptions.USERS;
+        activeList = ListOptions.CHATS;
+        getChats();
 
+        updateActiveChat(chats.get(0));
         updateLists();
     }
 
-    public void updateLists() {
-        getData();
-
-        activeGroup = chats.get(0);
-        lblActChat.setText(activeGroup.getGroupname());
+    public void updateActiveChat(Chat chat) {
+        activeChat = chat;
+        lblActChat.setText(activeChat.getGroupname());
 
         // Enable option to delete group
-        if (activeGroup.getUsers().size() == 1) {
+        if (activeChat.getTotalUsers() == 1 && activeChat.isAdmin()) {
             btnDelete.setVisible(true);
         } else {
             btnDelete.setVisible(false);
         }
+        updateMessages();
+    }
+
+    public void updateMessages() {
+        getMessages();
 
         // Messages list View
         lstViewMsg.setCellFactory((lv) -> {
             return MsgCell.newInstance(activeUser);
         });
         lstViewMsg.setItems(messagesItems);
+    }
 
+    public void updateLists() {
         // Main list view
         switch (activeList) {
             case CHATS:
                 lstView.setCellFactory((lv) -> {
-                    return ChatCell.newInstance();
+                    return ChatCell.newInstance(this);
                 });
                 
                 ObservableList<Object> objectItemsChats = FXCollections.observableArrayList();
                 objectItemsChats.addAll(chatsItems);
                 lstView.setItems(objectItemsChats);
+
+                // Select the activeChat if it exists in the chats list
+                if (activeChat != null && chats.contains(activeChat)) {
+                    lstView.getSelectionModel().select(activeChat);
+                } else {
+                    System.out.println("Not active chat found in chats!!!");
+                }
+
                 break;
             case USERS:
                 lstView.setCellFactory((lv) -> {
-                    return UserCell.newInstance();
+                    return UserCell.newInstance(activeChat);
                 });
 
                 ObservableList<Object> objectItemsUsers = FXCollections.observableArrayList();
@@ -138,75 +156,120 @@ public class MainController implements Initializable {
         }
     }
 
-    private void getData() {
+    private void getUsers() {
         users = new ArrayList<>();
-        chats = new ArrayList<>();
-        rooms = new ArrayList<>();
-        messages = new ArrayList<>();
         usersItems = FXCollections.observableArrayList();
-        chatsItems = FXCollections.observableArrayList();
-        roomsItems = FXCollections.observableArrayList();
-        messagesItems = FXCollections.observableArrayList();
-
-        // Users
+        
         users.add(activeUser);
         users.add(new User("User2", false));
         users.add(new User("User3", false, true));
         usersItems.addAll(users);
+    }
+
+    private void getChats() {
+        chats = new ArrayList<>();
+        chatsItems = FXCollections.observableArrayList();
 
         // Groups / Chats
-        chats.add(new Group("Group", users, messages, false));
-        chats.add(new Group("Group2", users, messages, true));
+        Chat chat1 = new Chat("Group", 1, 2, false);
+        chat1.setNewMessages(true);
+        chats.add(chat1);
+        chats.add(new Chat("Group2", 2, 2, false));
         chatsItems.addAll(chats);
+    }
+
+    private void getRooms() {
+        rooms = new ArrayList<>();
+        roomsItems = FXCollections.observableArrayList();
 
         // Groups / Rooms
-        rooms.add(new Group("Group3", users, true));
-        rooms.add(new Group("Group4", users, true));
+        rooms.add(new Room("Group3", false));
+        rooms.add(new Room("Group4", true));
         roomsItems.addAll(rooms);
-        
-        // Messages
-        messages.add(new Message(activeUser, "Hola"));
-        messages.add(new Message(users.get(1), "Holi"));
-        messagesItems.addAll(messages);
+    }
 
+    private void getMessages() {
+        messages = new ArrayList<>();
+        messagesItems = FXCollections.observableArrayList();
 
-        // try {
-        //     Client client = new Client();
-        //     JSONObject responseJson = client.getChat(activeUser.getUsername(), activeGroup.getGroupname());
+        try {
+            Client client = new Client();
+            JSONObject responseJson = client.getChat(activeUser.getUsername(), activeChat.getGroupname());
             
-        //     char response = ((String) responseJson.get("result")).charAt(0);
+            char response = ((String) responseJson.get("result")).charAt(0);
         
-        //     if (response == '1') {
-        //         System.out.println("Chat is got!");
-        //     } else {
-        //         System.out.println("Error getting chat");
-        //     }
-        // } catch (Exception e) {
-        //     System.out.println("Server not available");
-        // }
+            if (response == '1') {
+                System.out.println("Chat is got!");
+                JSONArray msgsJson = (JSONArray) responseJson.get("chats");
+
+                for (Object obj : msgsJson) {
+                    JSONObject msgObject = (JSONObject) obj;
+                    String username = (String) msgObject.get("user");
+                    String messageText = (String) msgObject.get("message");
+        
+                    User user = new User(username, true);
+                    Message message = new Message(user, messageText);
+                    messages.add(message);
+                }
+
+                messagesItems.addAll(messages);
+
+            } else {
+                System.out.println("Error getting chat");
+            }
+        } catch (Exception e) {
+            System.out.println("Server not available");
+        }
+
     }
 
     @FXML
     private void refresh(ActionEvent event) {
         System.out.println("Updating...");
+        getChats();
+        getUsers();
+        getRooms();
+        getMessages();
+        
+        for (Chat chat : chats) {
+            if (chat.getGroupname().equals(activeChat.getGroupname())) {
+                activeChat = chat;
+                break;
+            }
+        }
+
+        updateActiveChat(activeChat);
         updateLists();
+        updateMessages();
     }
     
     @FXML
     private void viewUsers(ActionEvent event) {
         activeList = ListOptions.USERS;
+        getUsers();
         updateLists();
     }
 
     @FXML
     private void viewChats(ActionEvent event) {
         activeList = ListOptions.CHATS;
+        getChats();
+
+        for (Chat chat : chats) {
+            if (chat.getGroupname().equals(activeChat.getGroupname())) {
+                activeChat = chat;
+                break;
+            }
+        }
+
+        updateActiveChat(activeChat);
         updateLists();
     }
 
     @FXML
     private void viewRooms(ActionEvent event) {
         activeList = ListOptions.ROOMS;
+        getRooms();
         updateLists();
     }
      
@@ -247,6 +310,8 @@ public class MainController implements Initializable {
                     if (response == 1) {
                         // Allow the dialog to close
                         dialog.close();
+                        getChats();
+                        updateLists();
                     } else {
                         // Consume the event to prevent the dialog from closing
                         ev.consume();
@@ -269,11 +334,11 @@ public class MainController implements Initializable {
     @FXML
     private void deleteGroup(ActionEvent event) {
         System.out.println("Deleting group...");
+        
+        getChats();
         updateLists();
-        // Here I need to change the active group to the next one
     }
     
-
     @FXML
     private void sendMessage(ActionEvent event) throws IOException, ParseException {
         String message = txtMessage.getText();
@@ -281,10 +346,11 @@ public class MainController implements Initializable {
         if (message != ""){
             try {
                 Client client = new Client();
-                char response = client.sendMessage(activeUser.getUsername(), activeGroup.getGroupname(), message);
+                char response = client.sendMessage(activeUser.getUsername(), activeChat.getGroupname(), message);
             
                 if (response == '1') {
                     txtMessage.setText("");
+                    updateMessages();
                     System.out.println("Message send!");
                 } else {
                     System.out.println("Error sending message");

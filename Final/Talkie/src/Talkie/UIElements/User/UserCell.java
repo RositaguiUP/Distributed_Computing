@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import Talkie.Elements.Chat;
 import Talkie.Elements.User;
 
 public class UserCell extends ListCell<Object> implements Initializable {
@@ -37,7 +38,7 @@ public class UserCell extends ListCell<Object> implements Initializable {
     private GridPane root;
 
     private Object model;
-
+    private Chat activeChat;
    
     /**
      * Initializes the controller class.
@@ -52,10 +53,16 @@ public class UserCell extends ListCell<Object> implements Initializable {
         return root;
     }
 
-    public static UserCell newInstance() {
+    public void setActiveChat(Chat activeChat) {
+        this.activeChat = activeChat;
+    }
+
+    public static UserCell newInstance(Chat activeChat) {
         FXMLLoader loader = new FXMLLoader(UserCell.class.getResource("UserCell.fxml"));
         try {
             loader.load();
+            UserCell controller = loader.getController();
+            controller.setActiveChat(activeChat);
             return loader.getController();
         } catch (IOException ex) {
             return null;
@@ -69,27 +76,32 @@ public class UserCell extends ListCell<Object> implements Initializable {
         // make empty cell items invisible
         getRoot().getChildrenUnmodifiable().forEach(c -> c.setVisible(!empty));
         // update valid cells with model data
-        if (!empty && item != null && item instanceof User && !item.equals(this.model)) {
+        if (!empty && item != null && item instanceof User) {
             User user = (User) item;
             lblUser.setText(user.getUsername());
-            lblNotf.setVisible(false);
-            btnAccept.setVisible(false);
+            
+            if (activeChat.isAdmin()) {
+                if (user.isBelongGroup()) {
+                    lblNotf.setVisible(false);
+                    btnAccept.setVisible(false);
 
-            if (user.isBelongGroup()) {
-                // Create a new Image with the updated URL
-                Image newImage = new Image("file:./img/add.png");
-                // Set the new Image to the ImageView
-                imgViewIcon.setImage(newImage);
-                btnIcon.setOnAction(this::addUser);
-
-            } else if (user.isRequestingEnter()) {
-                lblNotf.setVisible(true);
-                btnAccept.setVisible(true);
-
-                Image newImage = new Image("file:./img/remove.png");
-                imgViewIcon.setImage(newImage);
-                btnIcon.setOnAction(this::denyUser);
+                    // Create a new Image with the updated URL
+                    Image newImage = new Image("file:./img/add.png");
+                    // Set the new Image to the ImageView
+                    imgViewIcon.setImage(newImage);
+                    btnIcon.setOnAction(this::addUser);
+    
+                } else if (user.isRequestingEnter()) {
+                    Image newImage = new Image("file:./img/remove.png");
+                    imgViewIcon.setImage(newImage);
+                    btnIcon.setOnAction(this::denyUser);
+                }
+            } else {
+                lblNotf.setVisible(false);
+                btnAccept.setVisible(false);
+                btnIcon.setVisible(false);
             }
+            
         }
         // keep a reference to the model item in the ListCell
         this.model = item;

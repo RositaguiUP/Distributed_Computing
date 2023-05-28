@@ -31,6 +31,7 @@ public class MsgCell extends ListCell<Message> implements Initializable {
     private AnchorPane root;
 
     private Message model;
+    private User activeUser;
 
    
     /**
@@ -45,8 +46,6 @@ public class MsgCell extends ListCell<Message> implements Initializable {
     public AnchorPane getRoot() {
         return root;
     }
-
-    private User activeUser;
 
     public void setActiveUser(User activeUser) {
         this.activeUser = activeUser;

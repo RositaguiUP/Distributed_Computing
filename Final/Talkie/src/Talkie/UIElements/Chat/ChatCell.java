@@ -12,7 +12,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import Talkie.Elements.Group;
+import Talkie.Controllers.MainController;
+import Talkie.Elements.Chat;
 
 public class ChatCell extends ListCell<Object> implements Initializable {
     @FXML
@@ -25,7 +26,7 @@ public class ChatCell extends ListCell<Object> implements Initializable {
     private GridPane root;
 
     private Object model;
-
+    private MainController mainController;
    
     /**
      * Initializes the controller class.
@@ -40,11 +41,13 @@ public class ChatCell extends ListCell<Object> implements Initializable {
         return root;
     }
 
-    public static ChatCell newInstance() {
+    public static ChatCell newInstance(MainController mainController) {
         FXMLLoader loader = new FXMLLoader(ChatCell.class.getResource("ChatCell.fxml"));
         try {
             loader.load();
-            return loader.getController();
+            ChatCell cell = loader.getController();
+            cell.mainController = mainController;
+            return cell;
         } catch (IOException ex) {
             return null;
         }
@@ -56,13 +59,22 @@ public class ChatCell extends ListCell<Object> implements Initializable {
         // make empty cell items invisible
         getRoot().getChildrenUnmodifiable().forEach(c -> c.setVisible(!empty));
         // update valid cells with model data
-        if (!empty && item != null && item instanceof Group && !item.equals(this.model)) {
-            Group group = (Group) item;
+        if (!empty && item != null && item instanceof Chat) {
+            Chat group = (Chat) item;
             lblGroup.setText(group.getGroupname());
-            lblNotf.setVisible(false);
 
-            if (group.isNewMessages()) {
-                lblNotf.setVisible(true);
+            if (!group.isNewMessages()) {
+                lblNotf.setVisible(false);
+            }
+
+            // Set the background color based on the selected state
+            if (isSelected()) {
+                getRoot().setStyle("-fx-background-color: #ec82b357; -fx-background-radius: 25px;");
+                lblNotf.setVisible(false);
+                group.setNewMessages(false);
+                mainController.updateActiveChat(group); // Update the activeChat in the main controller
+            } else {
+                getRoot().setStyle(""); // Reset the background color
             }
         }
         // keep a reference to the model item in the ListCell

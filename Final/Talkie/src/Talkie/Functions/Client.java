@@ -94,6 +94,7 @@ public class Client {
 
         // Create a JSONObject instance
         JSONObject jsonObject = new JSONObject();
+
         jsonObject.put("service", "chat");
         jsonObject.put("username", username);
         jsonObject.put("groupname", groupname);

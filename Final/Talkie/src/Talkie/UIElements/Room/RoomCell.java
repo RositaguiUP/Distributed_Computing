@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import Talkie.Elements.Group;
+import Talkie.Elements.Room;
 
 public class RoomCell extends ListCell<Object> implements Initializable {
     @FXML
@@ -23,7 +23,7 @@ public class RoomCell extends ListCell<Object> implements Initializable {
     private Label lblNotf;
 
     @FXML
-    private Button btnIcon;
+    private Button btnEnter;
     
     @FXML
     private GridPane root;
@@ -60,11 +60,14 @@ public class RoomCell extends ListCell<Object> implements Initializable {
         // make empty cell items invisible
         getRoot().getChildrenUnmodifiable().forEach(c -> c.setVisible(!empty));
         // update valid cells with model data
-        if (!empty && item != null && item instanceof Group && !item.equals(this.model)) {
-            Group group = (Group) item;
+        if (!empty && item != null && item instanceof Room) {
+            Room group = (Room) item;
             lblGroup.setText(group.getGroupname());
-            btnIcon.setDisable(false);
-            lblNotf.setVisible(false);
+            
+            if (group.isWaitingEnter()) {
+                btnEnter.setDisable(true);
+                lblNotf.setVisible(true);
+            }
         }
         // keep a reference to the model item in the ListCell
         this.model = item;
@@ -72,7 +75,7 @@ public class RoomCell extends ListCell<Object> implements Initializable {
 
     @FXML
     private void enterGroups(ActionEvent event) {
-        btnIcon.setDisable(true);
+        btnEnter.setDisable(true);
         lblNotf.setVisible(true);
     }
 

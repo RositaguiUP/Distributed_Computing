@@ -23,7 +23,7 @@
     <RowConstraints vgrow="NEVER" />
   </rowConstraints>
    <children>
-      <Label fx:id="lblGroup" prefHeight="34.0" prefWidth="275.0" text="User1" textFill="#3f4143" GridPane.columnIndex="0">
+      <Label fx:id="lblGroup" prefHeight="34.0" prefWidth="275.0" text="Group1" textFill="#3f4143" GridPane.columnIndex="0">
          <font>
             <Font name="Segoe UI" size="20.0" />
          </font>
@@ -39,7 +39,7 @@
             <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
          </padding>
       </Label>
-      <Button fx:id="btnIcon" mnemonicParsing="false" onAction="#enterGroups" prefHeight="35.0" prefWidth="35.0" styleClass="menu-button" GridPane.columnIndex="2">
+      <Button fx:id="btnEnter" mnemonicParsing="false" onAction="#enterGroups" prefHeight="35.0" prefWidth="35.0" styleClass="menu-button" GridPane.columnIndex="2">
          <graphic>
             <ImageView fx:id="imgViewIcon" fitHeight="25.0" fitWidth="25.0">
                <image>
