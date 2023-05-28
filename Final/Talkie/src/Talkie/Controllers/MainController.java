@@ -82,6 +82,22 @@ public class MainController implements Initializable {
         
     }    
 
+    
+
+    public ArrayList<Chat> getArrayChats() {
+        return chats;
+    }
+
+
+
+    public User getActiveUser() {
+        return activeUser;
+    }
+
+    public Chat getActiveChat() {
+        return activeChat;
+    }
+
     public void initData(User user) throws IOException{
         usersItems = FXCollections.observableArrayList();
         chatsItems = FXCollections.observableArrayList();
@@ -154,7 +170,7 @@ public class MainController implements Initializable {
                 break;
             case USERS:
                 lstView.setCellFactory((lv) -> {
-                    return UserCell.newInstance(activeChat);
+                    return UserCell.newInstance(this);
                 });
 
                 ObservableList<Object> objectItemsUsers = FXCollections.observableArrayList();
@@ -165,7 +181,7 @@ public class MainController implements Initializable {
                 break;
             case ROOMS:
                 lstView.setCellFactory((lv) -> {
-                    return RoomCell.newInstance();
+                    return RoomCell.newInstance(this);
                 });
 
                 ObservableList<Object> objectItemsRooms = FXCollections.observableArrayList();
@@ -178,7 +194,7 @@ public class MainController implements Initializable {
         }
     }
 
-    private void getUsers() {
+    public void getUsers() {
         ArrayList<User> users = new ArrayList<>();
         usersItems.clear();
 
@@ -335,12 +351,17 @@ public class MainController implements Initializable {
         if (activeChat != null) {
             activeList = ListOptions.CHATS;
             getChats();
-    
-            for (Chat chat : chats) {
-                if (chat.getGroupname().equals(activeChat.getGroupname())) {
-                    activeChat = chat;
-                    break;
+
+            if (chats.isEmpty()) {
+                updateActiveChat(null);
+            } else {
+                for (Chat chat : chats) {
+                    if (chat.getGroupname().equals(activeChat.getGroupname())) {
+                        activeChat = chat;
+                        break;
+                    }
                 }
+                updateActiveChat(chats.get(0));
             }
     
             updateActiveChat(activeChat);
@@ -414,10 +435,25 @@ public class MainController implements Initializable {
 
     @FXML
     private void deleteGroup(ActionEvent event) {
-        System.out.println("Deleting group...");
+        try {
+            Client client = new Client();
+            char response = client.deleteGroup(activeChat.getGroupname());
         
-        getChats();
-        updateLists();
+            if (response == '1') {
+                getChats();
+                if (chats.isEmpty()) {
+                    updateActiveChat(null);
+                } else {
+                    updateActiveChat(chats.get(0));
+                }
+                updateLists();
+                System.out.println("Deleting group...");
+            } else {
+                System.out.println("Error sending message");
+            }
+        } catch (Exception e) {
+            System.out.println("Server not available");
+        }
     }
     
     @FXML

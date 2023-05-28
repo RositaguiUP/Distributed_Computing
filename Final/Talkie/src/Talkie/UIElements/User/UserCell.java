@@ -15,8 +15,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import Talkie.Controllers.MainController;
 import Talkie.Elements.Chat;
 import Talkie.Elements.User;
+import Talkie.Functions.Client;
 
 public class UserCell extends ListCell<Object> implements Initializable {
     @FXML
@@ -38,7 +40,7 @@ public class UserCell extends ListCell<Object> implements Initializable {
     private GridPane root;
 
     private Object model;
-    private Chat activeChat;
+    private MainController mainController;
    
     /**
      * Initializes the controller class.
@@ -53,16 +55,12 @@ public class UserCell extends ListCell<Object> implements Initializable {
         return root;
     }
 
-    public void setActiveChat(Chat activeChat) {
-        this.activeChat = activeChat;
-    }
-
-    public static UserCell newInstance(Chat activeChat) {
+    public static UserCell newInstance(MainController mainController) {
         FXMLLoader loader = new FXMLLoader(UserCell.class.getResource("UserCell.fxml"));
         try {
             loader.load();
-            UserCell controller = loader.getController();
-            controller.setActiveChat(activeChat);
+            UserCell cell = loader.getController();
+            cell.mainController = mainController;
             return loader.getController();
         } catch (IOException ex) {
             return null;
@@ -80,7 +78,7 @@ public class UserCell extends ListCell<Object> implements Initializable {
             User user = (User) item;
             lblUser.setText(user.getUsername());
             
-            if (activeChat.isAdmin()) {
+            if (mainController.getActiveChat().isAdmin()) {
                 lblNotf.setVisible(false);
                 btnAccept.setVisible(false);
 
@@ -113,46 +111,84 @@ public class UserCell extends ListCell<Object> implements Initializable {
 
     @FXML
     private void acceptUser(ActionEvent event) {
-        System.out.println("User accepted");
-        // Update list
-
-        lblNotf.setVisible(false);
-        btnAccept.setVisible(false);
-        Image newImage = new Image("file:./img/remove.png");
-        imgViewIcon.setImage(newImage);
+        try {
+            Client client = new Client();
+            char response = client.addUser(mainController.getActiveUser().getUsername(),
+            mainController.getActiveChat().getGroupname(), lblUser.getText());
+            
+            if (response == '1') {
+                System.out.println("User accepted");
+                response = client.deleteReq(mainController.getActiveChat().getGroupname(), lblUser.getText());
+            
+                if (response == '1') {
+                    mainController.getUsers();
+                    mainController.updateLists();
+                    System.out.println("Request denied");
+                } else {
+                    System.out.println("Error denied user");
+                }
+            } else {
+                System.out.println("Error accepting user");
+            }
+        } catch (Exception e) {
+            System.out.println("Server not available");
+        }
     }
 
     @FXML
     private void denyUser(ActionEvent event) {
-        System.out.println("User denied");
-        // Update list
-
-        lblNotf.setVisible(false);
-        btnAccept.setVisible(false);
-        Image newImage = new Image("file:./img/add.png");
-        imgViewIcon.setImage(newImage);
-        btnIcon.setOnAction(this::addUser);
+        try {
+            Client client = new Client();
+            char response = client.deleteReq(mainController.getActiveChat().getGroupname(), lblUser.getText());
+            
+            if (response == '1') {
+                mainController.getUsers();
+                mainController.updateLists();
+                System.out.println("Request denied");
+            } else {
+                System.out.println("Error denied user");
+            }
+        } catch (Exception e) {
+            System.out.println("Server not available");
+        }
     }
 
 
     @FXML
     private void addUser(ActionEvent event) {
-        System.out.println("User added");
-        // Update list
-
-        // SIMULATION (Delete)
-        Image newImage = new Image("file:./img/remove.png");
-        imgViewIcon.setImage(newImage);
+        try {
+            Client client = new Client();
+            char response = client.addUser(mainController.getActiveUser().getUsername(),
+            mainController.getActiveChat().getGroupname(), lblUser.getText());
+            
+            if (response == '1') {
+                mainController.getUsers();
+                mainController.updateLists();
+                System.out.println("User added");
+            } else {
+                System.out.println("Error adding user");
+            }
+        } catch (Exception e) {
+            System.out.println("Server not available");
+        }
     }
 
     @FXML
     private void removeUser(ActionEvent event) {
-        System.out.println("User removed");
-        // Update list
-
-        // SIMULATION (Delete)
-        Image newImage = new Image("file:./img/add.png");
-        imgViewIcon.setImage(newImage);
+        try {
+            Client client = new Client();
+            char response = client.deleteUser(mainController.getActiveChat().getGroupname(), lblUser.getText());
+            
+            if (response == '1') {
+                mainController.getUsers();
+                mainController.updateLists();
+                System.out.println("User removed");
+            } else {
+                System.out.println("Error deleting user");
+            }
+        } catch (Exception e) {
+            System.out.println("Server not available");
+        }
     }
 
 }

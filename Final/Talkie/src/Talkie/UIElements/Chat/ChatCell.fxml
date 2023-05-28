@@ -39,7 +39,7 @@
             <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
          </padding>
       </Label>
-      <Button mnemonicParsing="false" onAction="#exitGroup" prefHeight="35.0" prefWidth="35.0" styleClass="menu-button" GridPane.columnIndex="2">
+      <Button fx:id="btnExit" mnemonicParsing="false" onAction="#exitGroup" prefHeight="35.0" prefWidth="35.0" styleClass="menu-button" GridPane.columnIndex="2">
          <graphic>
             <ImageView fx:id="imgViewIcon" fitHeight="25.0" fitWidth="25.0">
                <image>

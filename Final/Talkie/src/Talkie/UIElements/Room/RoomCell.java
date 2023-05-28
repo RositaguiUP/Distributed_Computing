@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import Talkie.Controllers.MainController;
 import Talkie.Elements.Room;
+import Talkie.Functions.Client;
 
 public class RoomCell extends ListCell<Object> implements Initializable {
     @FXML
@@ -29,6 +31,7 @@ public class RoomCell extends ListCell<Object> implements Initializable {
     private GridPane root;
 
     private Object model;
+    private MainController mainController;
 
    
     /**
@@ -44,11 +47,13 @@ public class RoomCell extends ListCell<Object> implements Initializable {
         return root;
     }
 
-    public static RoomCell newInstance() {
+    public static RoomCell newInstance(MainController mainController) {
         FXMLLoader loader = new FXMLLoader(RoomCell.class.getResource("RoomCell.fxml"));
         try {
             loader.load();
-            return loader.getController();
+            RoomCell cell = loader.getController();
+            cell.mainController = mainController;
+            return cell;
         } catch (IOException ex) {
             return null;
         }
@@ -76,8 +81,10 @@ public class RoomCell extends ListCell<Object> implements Initializable {
 
     @FXML
     private void enterGroups(ActionEvent event) {
+        
         btnEnter.setDisable(true);
         lblNotf.setVisible(true);
+        
     }
 
 }
