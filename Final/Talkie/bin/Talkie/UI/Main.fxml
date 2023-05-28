@@ -20,9 +20,9 @@
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="90.0" prefWidth="200.0" styleClass="blue-bckgrnd">
                <children>
-                  <Label prefHeight="58.0" prefWidth="510.0" text="Talkie" textFill="WHITE">
+                  <Label fx:id="lblWlcm" prefHeight="58.0" prefWidth="510.0" text="Welcome to Talkie Username!" textFill="WHITE">
                      <font>
-                        <Font name="Segoe UI Black" size="35.0" />
+                        <Font name="Segoe UI Black" size="24.0" />
                      </font>
                   </Label>
                   <Button mnemonicParsing="false" onAction="#refresh" prefHeight="45.0" prefWidth="45.0" styleClass="menu-button" textFill="WHITE">
@@ -92,7 +92,7 @@
                <children>
                   <Label fx:id="lblActChat" prefHeight="58.0" prefWidth="527.0" text="NameGroup" textFill="WHITE">
                      <font>
-                        <Font name="Segoe UI Black" size="30.0" />
+                        <Font name="Segoe UI Black" size="24.0" />
                      </font>
                   </Label>
                   <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#deleteGroup" prefHeight="45.0" prefWidth="45.0" styleClass="menu-button" textFill="WHITE">

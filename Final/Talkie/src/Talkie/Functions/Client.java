@@ -89,6 +89,52 @@ public class Client {
         return response;
     }
 
+    public JSONObject getChats(String username) throws IOException, ParseException {
+        connectToServer();
+
+        // Create a JSONObject instance
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("service", "groups");
+        jsonObject.put("username", username);
+
+        // Send the encrypted request and receive the response
+        JSONObject responseJson = sendEncryptedRequest(jsonObject);
+
+        return responseJson;
+    }
+
+    public JSONObject getRooms(String username) throws IOException, ParseException {
+        connectToServer();
+
+        // Create a JSONObject instance
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("service", "groupsNo");
+        jsonObject.put("username", username);
+
+        // Send the encrypted request and receive the response
+        JSONObject responseJson = sendEncryptedRequest(jsonObject);
+
+        return responseJson;
+    }
+
+    public JSONObject getUsers(String username, String groupName) throws IOException, ParseException {
+        connectToServer();
+
+        // Create a JSONObject instance
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("service", "users");
+        jsonObject.put("username", username);
+        jsonObject.put("groupname", groupName);
+
+        // Send the encrypted request and receive the response
+        JSONObject responseJson = sendEncryptedRequest(jsonObject);
+
+        return responseJson;
+    }
+
     public JSONObject getChat(String username, String groupname) throws IOException, ParseException {
         connectToServer();
 
