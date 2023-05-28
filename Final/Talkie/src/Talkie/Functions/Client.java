@@ -131,13 +131,17 @@ public class Client {
         return responseJson;
     }
 
-    public JSONObject getUsers(String username, String groupName) throws IOException, ParseException {
+    public JSONObject getUsers(String username, String groupName, boolean isAdmin) throws IOException, ParseException {
         connectToServer();
 
         // Create a JSONObject instance
         JSONObject jsonObject = new JSONObject();
 
-        jsonObject.put("service", "users");
+        if (isAdmin) {
+            jsonObject.put("service", "usersAdmin");
+        } else {
+            jsonObject.put("service", "users");
+        }
         jsonObject.put("username", username);
         jsonObject.put("groupname", groupName);
 

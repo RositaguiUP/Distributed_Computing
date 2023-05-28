@@ -63,6 +63,7 @@ public class RoomCell extends ListCell<Object> implements Initializable {
         if (!empty && item != null && item instanceof Room) {
             Room group = (Room) item;
             lblGroup.setText(group.getGroupname());
+            lblNotf.setVisible(false);
             
             if (group.isWaitingEnter()) {
                 btnEnter.setDisable(true);

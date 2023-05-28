@@ -81,17 +81,21 @@ public class UserCell extends ListCell<Object> implements Initializable {
             lblUser.setText(user.getUsername());
             
             if (activeChat.isAdmin()) {
-                if (user.isBelongGroup()) {
-                    lblNotf.setVisible(false);
-                    btnAccept.setVisible(false);
+                lblNotf.setVisible(false);
+                btnAccept.setVisible(false);
 
+                if (!user.isBelongGroup()) {
                     // Create a new Image with the updated URL
                     Image newImage = new Image("file:./img/add.png");
                     // Set the new Image to the ImageView
                     imgViewIcon.setImage(newImage);
                     btnIcon.setOnAction(this::addUser);
-    
-                } else if (user.isRequestingEnter()) {
+                }
+                
+                if (user.isRequestingEnter()) {
+                    lblNotf.setVisible(true);
+                    btnAccept.setVisible(true);
+                    
                     Image newImage = new Image("file:./img/remove.png");
                     imgViewIcon.setImage(newImage);
                     btnIcon.setOnAction(this::denyUser);

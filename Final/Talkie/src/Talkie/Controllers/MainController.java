@@ -180,10 +180,11 @@ public class MainController implements Initializable {
 
     private void getUsers() {
         ArrayList<User> users = new ArrayList<>();
+        usersItems.clear();
 
         try {
             Client client = new Client();
-            JSONObject responseJson = client.getUsers(activeUser.getUsername(), activeChat.getGroupname());
+            JSONObject responseJson = client.getUsers(activeUser.getUsername(), activeChat.getGroupname(), activeChat.isAdmin());
             
             JSONArray arrayJson = (JSONArray) responseJson.get("users");
 
@@ -191,8 +192,19 @@ public class MainController implements Initializable {
                 JSONObject chatObject = (JSONObject) obj;
                 String userName = (String) chatObject.get("username");
 
-                User user = new User(userName, true);
-                users.add(user);
+                if (!userName.equals(activeUser.getUsername())) {
+                    User user = null;
+                    if (activeChat.isAdmin()) {
+                        long belongGroupLong = (long) chatObject.get("belongGroup");
+                        boolean belongGroup = belongGroupLong == 1L;
+                        long requestEnterLong = (long) chatObject.get("requestEnter");
+                        boolean requestEnter = requestEnterLong == 1L;
+                        user = new User(userName, belongGroup, requestEnter);
+                    } else {
+                        user = new User(userName, true);
+                    }
+                    users.add(user);
+                }
             }
 
             usersItems.addAll(users);
