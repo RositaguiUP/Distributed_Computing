@@ -88,8 +88,6 @@ public class MainController implements Initializable {
         return chats;
     }
 
-
-
     public User getActiveUser() {
         return activeUser;
     }
@@ -99,6 +97,7 @@ public class MainController implements Initializable {
     }
 
     public void initData(User user) throws IOException{
+        chats = new ArrayList<>();
         usersItems = FXCollections.observableArrayList();
         chatsItems = FXCollections.observableArrayList();
         roomsItems = FXCollections.observableArrayList();
@@ -230,16 +229,49 @@ public class MainController implements Initializable {
         }
     }
 
-    public void getChats() {
-        chats = new ArrayList<>();
-        chatsItems.clear();
+    // public void getChats() {
+    //     ArrayList<Chat> chatsTemp = new ArrayList<>();
+    //     chatsTemp.addAll(chats);
+    //     chats.clear();
+    //     chatsItems.clear();
 
+    //     try {
+    //         Client client = new Client();
+    //         JSONObject responseJson = client.getChats(activeUser.getUsername());
+            
+    //         JSONArray arrayJson = (JSONArray) responseJson.get("groups");
+
+    //         for (Object obj : arrayJson) {
+    //             JSONObject chatObject = (JSONObject) obj;
+    //             String groupName = (String) chatObject.get("groupName");
+    //             long totUsers = (long) chatObject.get("totUsers");
+    //             long totMsg = (long) chatObject.get("totMsg");
+    //             long isAdminLong = (long) chatObject.get("isAdmin");
+    //             boolean isAdmin = isAdminLong == 1L;
+
+    //             Chat chat = new Chat(groupName, (int) totUsers, (int) totMsg, isAdmin);
+                
+    //             chats.add(chat);
+    //         }
+
+    //         chatsItems.addAll(chats);
+    //         System.out.println("Got chats");
+    //     } catch (Exception e) {
+    //         System.out.println("Server not available");
+    //     }
+    // }
+
+
+    public void getChats() {
+        ArrayList<Chat> chatsTemp = new ArrayList<>();
+        chatsTemp.addAll(chats);
+    
         try {
             Client client = new Client();
             JSONObject responseJson = client.getChats(activeUser.getUsername());
             
             JSONArray arrayJson = (JSONArray) responseJson.get("groups");
-
+    
             for (Object obj : arrayJson) {
                 JSONObject chatObject = (JSONObject) obj;
                 String groupName = (String) chatObject.get("groupName");
@@ -247,11 +279,27 @@ public class MainController implements Initializable {
                 long totMsg = (long) chatObject.get("totMsg");
                 long isAdminLong = (long) chatObject.get("isAdmin");
                 boolean isAdmin = isAdminLong == 1L;
-
-                Chat chat = new Chat(groupName, (int) totUsers, (int) totMsg, isAdmin);
-                chats.add(chat);
+    
+                Chat existingChat = null;
+                for (Chat chat : chatsTemp) {
+                    if (chat.getGroupname().equals(groupName)) {
+                        existingChat = chat;
+                        break;
+                    }
+                }
+    
+                if (existingChat != null) {
+                    if (totMsg > existingChat.getTotalMessages()) {
+                        existingChat.setTotalMessages((int) totMsg);
+                        existingChat.setNewMessages(true);
+                    }
+                } else {
+                    Chat chat = new Chat(groupName, (int) totUsers, (int) totMsg, isAdmin);
+                    chats.add(chat);
+                }
             }
-
+    
+            chatsItems.clear();
             chatsItems.addAll(chats);
             System.out.println("Got chats");
         } catch (Exception e) {
