@@ -229,39 +229,6 @@ public class MainController implements Initializable {
         }
     }
 
-    // public void getChats() {
-    //     ArrayList<Chat> chatsTemp = new ArrayList<>();
-    //     chatsTemp.addAll(chats);
-    //     chats.clear();
-    //     chatsItems.clear();
-
-    //     try {
-    //         Client client = new Client();
-    //         JSONObject responseJson = client.getChats(activeUser.getUsername());
-            
-    //         JSONArray arrayJson = (JSONArray) responseJson.get("groups");
-
-    //         for (Object obj : arrayJson) {
-    //             JSONObject chatObject = (JSONObject) obj;
-    //             String groupName = (String) chatObject.get("groupName");
-    //             long totUsers = (long) chatObject.get("totUsers");
-    //             long totMsg = (long) chatObject.get("totMsg");
-    //             long isAdminLong = (long) chatObject.get("isAdmin");
-    //             boolean isAdmin = isAdminLong == 1L;
-
-    //             Chat chat = new Chat(groupName, (int) totUsers, (int) totMsg, isAdmin);
-                
-    //             chats.add(chat);
-    //         }
-
-    //         chatsItems.addAll(chats);
-    //         System.out.println("Got chats");
-    //     } catch (Exception e) {
-    //         System.out.println("Server not available");
-    //     }
-    // }
-
-
     public void getChats() {
         ArrayList<Chat> chatsTemp = new ArrayList<>();
         chatsTemp.addAll(chats);

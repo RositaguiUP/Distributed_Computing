@@ -15,24 +15,105 @@ import org.json.simple.parser.ParseException;
 public class Client {
     private final static int KEY = 8;
 
-    private final static int AUTHPORT = 5001;
+    private final static int PORT1 = 5001;
+    private final static int PORT2 = 5000;
     private Socket socket;
     private OutputStream outputStream;
     private InputStream inputStream;
     private PrintWriter out;
 
-    public void connectToServer() throws UnknownHostException, IOException {
-        try {
-            String host = InetAddress.getLocalHost().getHostAddress();
+    
+    
+    // public void connectToServer() throws UnknownHostException, IOException {
+    //     String host = InetAddress.getLocalHost().getHostAddress();
+    //     int[] ports =  { PORT1, PORT2};
 
-            // Connect with the server
-            socket = new Socket(host, AUTHPORT);
-            outputStream = socket.getOutputStream();
-            out = new PrintWriter(outputStream, true);
-            inputStream = socket.getInputStream();
-        } catch (Exception e) {
-            // TODO: handle exception
-            System.out.println("Error conection");
+    //     for (int port : ports) {
+    //         try {
+
+    //             // Connect with the server
+    //             SocketAddress socketAddress = new InetSocketAddress(host, port);
+    //             socket = new Socket();
+    //             socket.connect(socketAddress, 1000);
+
+    //             socket.setSoTimeout(1000); // Set the timeout for socket operations
+
+
+    //             outputStream = socket.getOutputStream();
+    //             out = new PrintWriter(outputStream, true);
+    //             inputStream = socket.getInputStream();
+
+    //             return;
+
+    //             // // Send request to check the conection with the server
+    //             // JSONObject jsonObject = new JSONObject();
+    //             // jsonObject.put("service", "connecting");
+
+    //             // // Send the encrypted request and receive the response
+    //             // JSONObject responseJson = sendEncryptedRequest(jsonObject);
+
+    //             // if (responseJson != null) {
+    //             //     char response = ((String) responseJson.get("result")).charAt(0);
+    //             //     if (response == '1') {
+    //             //         System.out.println("Connected to server: " + host + ":" + port);
+    //             //         return; // Connection successful, exit the loop
+    //             //     } else {
+    //             //         System.out.println("Failed to connect to server: " + host + ":" + port);
+    //             //     }
+    //             // } else {
+    //             //     System.out.println("Failed to connect to server: " + host + ":" + port);
+    //             // }
+    //         } catch (Exception e) {
+    //             // TODO: handle exception
+    //             System.out.println("Failed to connect to server: " + host + ":" + port);
+    //         }
+    //     }
+    // }
+
+    public void connectToServer() throws UnknownHostException, IOException {
+        String host = InetAddress.getLocalHost().getHostAddress();
+        int[] ports =  { PORT1, PORT2};
+
+        for (int port : ports) {
+            try {
+
+                // Connect with the server
+                socket = new Socket(host, port);
+
+
+                outputStream = socket.getOutputStream();
+                out = new PrintWriter(outputStream, true);
+                inputStream = socket.getInputStream();
+
+                // System.out.println("Connected to server: " + host + ":" + port);
+                // return; // Connection successful, exit the loop
+                
+                // Send request to check the conection with the server
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("service", "connecting");
+
+                // Send the encrypted request and receive the response
+                JSONObject responseJson = sendEncryptedRequest(jsonObject);
+
+                if (responseJson != null) {
+                    char response = ((String) responseJson.get("result")).charAt(0);
+                    if (response == '1') {
+                        socket = new Socket(host, port);
+                        outputStream = socket.getOutputStream();
+                        out = new PrintWriter(outputStream, true);
+                        inputStream = socket.getInputStream();
+                        System.out.println("Connected to server: " + host + ":" + port);
+                        return; // Connection successful, exit the loop
+                    } else {
+                        System.out.println("Failed to get response");
+                    }
+                } else {
+                    System.out.println("Failed to connect to server: " + host + ":" + port);
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
+                System.out.println("Failed to connect to container");
+            }
         }
     }
 
